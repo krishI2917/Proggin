@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProGGin — Master Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080c14;--bg2:#0d1220;--bg3:#131826;--card:#171d2e;--card2:#1c2338;
+  --border:#212940;--border2:#2a3452;
+  --accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;
+  --green:#00e599;--red:#ff4d6d;--pink:#ff6b9d;
+  --text:#e4eaf8;--text2:#6b7fa6;--text3:#303d5a;
+  --r:12px;--sh:0 8px 32px rgba(0,0,0,.5);
+}
+[data-theme="light"]{--bg:#f1f4fc;--bg2:#e8ecf8;--bg3:#dde3f4;--card:#fff;--card2:#f6f8ff;--border:#cdd4ec;--border2:#bbc4e0;--text:#0f1624;--text2:#4a5b80;--text3:#8a9ab8;--sh:0 8px 32px rgba(0,0,0,.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+a{color:inherit;text-decoration:none;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;background:rgba(8,12,20,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px;}
+[data-theme="light"] .topbar{background:rgba(241,244,252,.92);}
+.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{padding:5px 13px;border-radius:7px;font-size:0.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-tab:hover{color:var(--text);background:var(--card);}
+.nav-tab.active{background:var(--accent);color:#000;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.theme-btn{width:38px;height:20px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .3s;}
+.theme-btn::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--accent);transition:transform .3s;}
+[data-theme="light"] .theme-btn::after{transform:translateX(18px);background:var(--accent3);}
+
+/* ── LAYOUT ── */
+.app{padding-top:56px;display:flex;min-height:100vh;}
+.sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:56px;bottom:0;left:0;overflow-y:auto;z-index:100;transition:transform .3s;}
+.sidebar.collapsed{transform:translateX(-240px);}
+.main{flex:1;margin-left:240px;min-height:calc(100vh - 56px);transition:margin-left .3s;}
+.main.wide{margin-left:0;}
+.sb-toggle{position:fixed;top:50%;transform:translateY(-50%);width:18px;height:44px;background:var(--card2);border:1px solid var(--border);border-left:none;border-radius:0 7px 7px 0;cursor:pointer;z-index:150;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text2);transition:left .3s;left:240px;}
+.sidebar.collapsed~.sb-toggle{left:0;}
+
+/* ── SIDEBAR CONTENT ── */
+.sb-sec{padding:10px 6px 2px;}
+.sb-sec-title{font-size:.63rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:0 10px 5px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:.81rem;color:var(--text2);transition:all .15s;}
+.sb-item:hover{background:var(--card);color:var(--text);}
+.sb-item.active{background:rgba(0,212,255,.1);color:var(--accent);}
+.sb-item .si{font-size:.95rem;width:18px;text-align:center;}
+.sb-prog-wrap{padding:0 10px 2px;}
+.sb-prog{height:2px;background:var(--bg3);border-radius:1px;margin-top:3px;}
+.sb-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:1px;transition:width .5s;}
+
+/* ── VIEWS ── */
+.view{display:none;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .25s ease forwards;}
+
+/* ── HERO ── */
+.hero{padding:44px 40px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(0,212,255,.06),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(124,58,237,.05),transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.18;}
+.hero-in{position:relative;z-index:1;max-width:660px;}
+.hero-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border:1px solid var(--border2);border-radius:20px;font-size:.72rem;font-weight:600;color:var(--text2);margin-bottom:18px;background:var(--card);}
+.hero h1{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;line-height:1.15;margin-bottom:12px;}
+.hero h1 .g{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:24px;max-width:500px;}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#000;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,212,255,.3);}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-purple{background:var(--accent2);color:#fff;}
+.btn-purple:hover{opacity:.9;transform:translateY(-1px);}
+.btn-sm{padding:5px 12px;font-size:.77rem;}
+.btn-green{background:var(--green);color:#000;}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.stat{padding:18px 26px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--accent);}
+.stat-l{font-size:.72rem;color:var(--text2);margin-top:2px;font-weight:500;}
+
+/* ── SECTION ── */
+.sec{padding:28px 36px;}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.sec-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:9px;}
+.sec-title::before{content:'';width:3px;height:16px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:2px;}
+
+/* ── COURSE CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
+.cc:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--sh),0 0 30px rgba(0,212,255,.12);}
+.cc-stripe{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0;}
+.cc-icon{font-size:1.9rem;margin-bottom:10px;line-height:1;}
+.cc-name{font-family:'Syne',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:4px;}
+.cc-desc{font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:12px;}
+.cc-meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center;font-size:.7rem;color:var(--text3);}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:600;}
+.badge-c{background:rgba(0,212,255,.1);color:var(--accent);}
+.badge-p{background:rgba(124,58,237,.1);color:#a78bfa;}
+.badge-g{background:rgba(0,229,153,.1);color:var(--green);}
+.badge-y{background:rgba(245,158,11,.12);color:var(--accent3);}
+.badge-r{background:rgba(255,77,109,.1);color:var(--red);}
+.prog-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:10px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .6s;}
+.prog-txt{font-size:.68rem;color:var(--text3);margin-top:4px;font-family:'JetBrains Mono',monospace;}
+
+/* ── LESSON ── */
+.lesson-wrap{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 56px);}
+.ls-sidebar{background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.ls-hdr{padding:16px 14px;border-bottom:1px solid var(--border);}
+.ls-hdr h3{font-size:.92rem;font-weight:700;margin-bottom:3px;}
+.ls-hdr p{font-size:.72rem;color:var(--text2);}
+.ls-sec-title{padding:9px 14px 3px;font-size:.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;}
+.ls-item{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;transition:background .15s;font-size:.8rem;color:var(--text2);}
+.ls-item:hover{background:var(--bg3);}
+.ls-item.active{background:rgba(0,212,255,.09);color:var(--accent);border-right:2px solid var(--accent);}
+.ls-item.done .ls-dot{background:var(--green);border-color:var(--green);color:#000;}
+.ls-dot{width:20px;height:20px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;flex-shrink:0;transition:all .2s;}
+
+.lesson-body{padding:32px 44px 56px;max-width:860px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px;}
+.lesson-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px;}
+
+.theory-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px;}
+.theory-card h4{font-size:.85rem;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.theory-card p{color:var(--text2);line-height:1.75;font-size:.88rem;margin-bottom:9px;}
+.theory-card ul,.theory-card ol{color:var(--text2);line-height:1.8;font-size:.88rem;padding-left:20px;margin-bottom:8px;}
+.callout{padding:11px 14px;border-radius:8px;margin:10px 0;font-size:.84rem;line-height:1.6;}
+.callout-b{background:rgba(0,212,255,.07);border-left:3px solid var(--accent);color:var(--text);}
+.callout-y{background:rgba(245,158,11,.07);border-left:3px solid var(--accent3);color:var(--accent3);}
+.callout-g{background:rgba(0,229,153,.07);border-left:3px solid var(--green);color:var(--green);}
+.callout-r{background:rgba(255,77,109,.07);border-left:3px solid var(--red);color:var(--red);}
+.callout strong{font-weight:700;}
+
+.code-block{background:#060b14;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.cb-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);}
+.cb-lang{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3);display:flex;align-items:center;gap:7px;}
+.cb-dot{width:7px;height:7px;border-radius:50%;}
+.cb-actions{display:flex;gap:5px;}
+.cb-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text2);padding:3px 9px;border-radius:4px;cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;transition:all .2s;}
+.cb-btn:hover{border-color:var(--accent);color:var(--accent);}
+.cb-body{padding:18px;font-family:'JetBrains Mono',monospace;font-size:.81rem;line-height:1.75;color:#c4cde0;overflow-x:auto;white-space:pre;}
+.lesson-nav{display:flex;gap:10px;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:1px solid var(--border);}
+
+/* Syntax highlight */
+.sk{color:#c792ea}.sf{color:#82aaff}.ss{color:#c3e88d}.sn{color:#f78c6c}.sc{color:#4a6070;font-style:italic}.st{color:#ffcb6b}.so{color:#89ddff}
+
+/* ── PRACTICE ── */
+.editor-wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 56px);}
+.editor-pane{display:flex;flex-direction:column;border-right:1px solid var(--border);}
+.editor-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.editor-lbl{font-size:.74rem;font-weight:600;color:var(--text2);}
+.lang-sel{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:4px 9px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.74rem;cursor:pointer;outline:none;}
+.lang-sel:focus{border-color:var(--accent);}
+textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-family:'JetBrains Mono',monospace;font-size:.83rem;line-height:1.75;padding:18px;border:none;outline:none;resize:none;tab-size:4;}
+.out-pane{display:flex;flex-direction:column;}
+.out-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.out-body{flex:1;background:#050a11;padding:18px;font-family:'JetBrains Mono',monospace;font-size:.81rem;line-height:1.75;overflow-y:auto;}
+.out-ok{color:var(--green);}
+.out-err{color:var(--red);}
+.out-info{color:#60a5fa;}
+.chal-panel{border-top:1px solid var(--border);height:240px;overflow-y:auto;}
+.chal-hdr{padding:9px 12px;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+.chal-item{padding:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.chal-item:hover{background:var(--card);}
+.chal-item h4{font-size:.82rem;font-weight:600;margin-bottom:2px;}
+.chal-item p{font-size:.74rem;color:var(--text2);}
+.diff{padding:2px 6px;border-radius:9px;font-size:.66rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.diff-e{background:rgba(0,229,153,.1);color:var(--green);}
+.diff-m{background:rgba(245,158,11,.1);color:var(--accent3);}
+.diff-h{background:rgba(255,77,109,.1);color:var(--red);}
+
+/* ── QUIZ ── */
+.quiz-wrap{max-width:640px;margin:0 auto;padding:30px 36px;}
+.quiz-prog{margin-bottom:20px;}
+.quiz-prog-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .4s;}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px;}
+.quiz-qnum{font-family:'JetBrains Mono',monospace;font-size:.71rem;color:var(--text3);margin-bottom:6px;}
+.quiz-q{font-size:1.05rem;font-weight:700;margin-bottom:18px;line-height:1.5;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:11px 14px;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:.85rem;transition:all .18s;font-family:'JetBrains Mono',monospace;line-height:1.4;}
+.quiz-opt:hover{border-color:var(--accent);color:var(--accent);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(0,229,153,.09);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(255,77,109,.09);color:var(--red);}
+.quiz-opt.reveal{border-color:var(--green);background:rgba(0,229,153,.04);}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.quiz-result{text-align:center;padding:14px 0;}
+.score-ring{width:100px;height:100px;margin:0 auto 16px;position:relative;}
+.score-ring svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:8;}
+.ring-fg{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.score-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;}
+
+/* ── CHEATSHEET ── */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;}
+.cheat-card{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+.cheat-hdr{padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);font-weight:700;font-size:.85rem;display:flex;justify-content:space-between;align-items:center;}
+.cheat-body{padding:10px 14px;}
+.cheat-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:.78rem;}
+.cheat-row:last-child{border-bottom:none;}
+.cheat-k{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:.75rem;flex-shrink:0;}
+.cheat-v{color:var(--text2);text-align:right;font-size:.74rem;}
+
+/* ── ROADMAP ── */
+.rm-list{display:flex;flex-direction:column;}
+.rm-step{display:flex;gap:14px;padding:18px 0;}
+.rm-step:not(:last-child){border-bottom:1px solid var(--border);}
+.rm-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#000;flex-shrink:0;}
+.rm-content h4{font-weight:700;margin-bottom:4px;}
+.rm-content p{font-size:.81rem;color:var(--text2);line-height:1.6;}
+.rm-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+
+/* ── PROFILE ── */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;}
+.profile-av{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:#000;}
+.pstat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+.pstat{background:var(--bg2);border-radius:9px;padding:12px;text-align:center;}
+.pstat .n{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent);}
+.pstat .l{font-size:.69rem;color:var(--text2);margin-top:2px;}
+.ach{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:9px;margin-bottom:8px;}
+.ach-ico{width:38px;height:38px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+
+/* ── FILTER PILLS ── */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-pill{padding:4px 13px;border-radius:18px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:.75rem;font-weight:600;transition:all .18s;}
+.filter-pill:hover,.filter-pill.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* ── SEARCH ── */
+.search-box{width:100%;padding:8px 13px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.86rem;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif;margin-bottom:14px;}
+.search-box:focus{border-color:var(--accent);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:18px;right:18px;z-index:9999;padding:10px 16px;border-radius:8px;font-size:.82rem;font-weight:600;background:var(--card);border:1px solid var(--border);box-shadow:var(--sh);transform:translateY(50px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-color:var(--green);color:var(--green);}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+@media(max-width:900px){
+  .lesson-wrap{grid-template-columns:1fr;}
+  .ls-sidebar{display:none;}
+  .editor-wrap{grid-template-columns:1fr;height:auto;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .profile-grid{grid-template-columns:1fr;}
+  .sidebar{transform:translateX(-240px);}
+  .main{margin-left:0;}
+  .hero{padding:28px 18px;}
+  .sec{padding:20px 18px;}
+  .lesson-body{padding:20px 18px 36px;}
+}
+@media(max-width:600px){
+  .hero h1{font-size:1.7rem;}
+  .nav-tab{font-size:.74rem;padding:5px 9px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo" onclick="showView('home')">ProGGin</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showView('home')">🏠 Home</div>
+    <div class="nav-tab" onclick="showView('courses')">📚 Courses</div>
+    <div class="nav-tab" onclick="showView('practice')">⚡ Practice</div>
+    <div class="nav-tab" onclick="showView('cheatsheet')">📋 Cheatsheet</div>
+    <div class="nav-tab" onclick="showView('roadmap')">🗺️ Roadmap</div>
+    <div class="nav-tab" onclick="showView('profile')">📊 Progress</div>
+  </div>
+  <div class="topbar-right">
+    <div class="theme-btn" onclick="toggleTheme()" title="Toggle theme"></div>
+  </div>
+</div>
+
+<!-- SIDEBAR TOGGLE -->
+<div class="sb-toggle" id="sbToggle" onclick="toggleSidebar()">&#8250;</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-sec">
+    <div class="sb-sec-title">Navigate</div>
+    <div class="sb-item" onclick="showView('home')"><span class="si">🏠</span>Home</div>
+    <div class="sb-item" onclick="showView('courses')"><span class="si">📚</span>Courses</div>
+    <div class="sb-item" onclick="showView('practice')"><span class="si">⚡</span>Practice</div>
+    <div class="sb-item" onclick="showView('cheatsheet')"><span class="si">📋</span>Cheatsheet</div>
+    <div class="sb-item" onclick="showView('roadmap')"><span class="si">🗺️</span>Roadmap</div>
+    <div class="sb-item" onclick="showView('profile')"><span class="si">📊</span>Progress</div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">Languages</div>
+    <div id="sbLangs"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainArea">
+
+<!-- HOME -->
+<div id="view-home" class="view active">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-in">
+      <div class="hero-pill">✨ 4 Languages · Beginner → Advanced</div>
+      <h1>Learn <span class="g">Programming</span><br>From Zero to Pro</h1>
+      <p>Interactive lessons, live code examples, quizzes, and a built-in editor. No login, no signup — just learn.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="showView('courses')">🚀 Start Learning</button>
+        <button class="btn btn-secondary" onclick="showView('practice')">⚡ Practice</button>
+        <button class="btn btn-purple" onclick="startQuickQuiz()">📝 Quick Quiz</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="statDone">0</div><div class="stat-l">Lessons Completed</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Languages</div></div>
+    <div class="stat"><div class="stat-n" id="statAvg">–</div><div class="stat-l">Quiz Average</div></div>
+    <div class="stat"><div class="stat-n">80+</div><div class="stat-l">Code Examples</div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr"><div class="sec-title">Choose a Language</div></div>
+    <div class="grid" id="homeGrid"></div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div id="view-courses" class="view">
+  <div class="sec">
+    <div class="sec-title" style="margin-bottom:16px;">📚 All Courses</div>
+    <input class="search-box" id="courseSearch" placeholder="Search courses…" oninput="filterCourses()">
+    <div class="filter-row">
+      <button class="filter-pill active" onclick="filterLevel('all',this)">All</button>
+      <button class="filter-pill" onclick="filterLevel('beginner',this)">Beginner</button>
+      <button class="filter-pill" onclick="filterLevel('intermediate',this)">Intermediate</button>
+      <button class="filter-pill" onclick="filterLevel('advanced',this)">Advanced</button>
+    </div>
+    <div class="grid" id="coursesGrid"></div>
+  </div>
+</div>
+
+<!-- LESSON -->
+<div id="view-lesson" class="view">
+  <div class="lesson-wrap">
+    <div class="lesson-sidebar ls-sidebar" id="lsSidebar"></div>
+    <div class="lesson-body" id="lsBody"></div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div id="view-practice" class="view">
+  <div class="editor-wrap">
+    <div class="editor-pane">
+      <div class="editor-bar">
+        <span class="editor-lbl">Language:</span>
+        <select class="lang-sel" id="editorLang" onchange="refreshChallenges()">
+          <option value="python">🐍 Python</option>
+          <option value="javascript">⚡ JavaScript</option>
+          <option value="cpp">⚙️ C++</option>
+          <option value="java">☕ Java</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="runCode()">▶ Run</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearEditor()">Clear</button>
+        <button class="btn btn-secondary btn-sm" onclick="copyEditor()">Copy</button>
+      </div>
+      <textarea id="codeInput" spellcheck="false" placeholder="// Write your code here…"></textarea>
+      <div class="chal-panel">
+        <div class="chal-hdr"><span>📋 Challenges</span><span id="chalCount" style="font-size:.7rem;color:var(--text2);font-family:'JetBrains Mono',monospace;"></span></div>
+        <div id="chalList"></div>
+      </div>
+    </div>
+    <div class="out-pane">
+      <div class="out-bar">
+        <span style="font-size:.76rem;font-weight:600;color:var(--text2);">⚙️ Output</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto;" onclick="document.getElementById('output').innerHTML=''">Clear</button>
+      </div>
+      <div class="out-body" id="output">
+        <span class="out-info">// Output appears here…
+// Python & JavaScript run in browser
+// C++ & Java: copy code → run locally</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHEATSHEET -->
+<div id="view-cheatsheet" class="view">
+  <div class="sec">
+    <div class="sec-title" style="margin-bottom:16px;">📋 Cheatsheets</div>
+    <div class="filter-row" id="cheatFilter">
+      <button class="filter-pill active" onclick="showCheatsheet('python',this)">🐍 Python</button>
+      <button class="filter-pill" onclick="showCheatsheet('javascript',this)">⚡ JavaScript</button>
+      <button class="filter-pill" onclick="showCheatsheet('cpp',this)">⚙️ C++</button>
+      <button class="filter-pill" onclick="showCheatsheet('java',this)">☕ Java</button>
+    </div>
+    <div class="cheat-grid" id="cheatContent"></div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div id="view-roadmap" class="view">
+  <div class="sec" style="max-width:740px;margin:0 auto;">
+    <div class="sec-title" style="margin-bottom:6px;">🗺️ Learning Roadmap</div>
+    <p style="color:var(--text2);margin-bottom:20px;font-size:.86rem;">Pick a path and follow the steps from beginner to professional.</p>
+    <div class="filter-row">
+      <button class="filter-pill active" onclick="showRoadmap('python',this)">🐍 Python</button>
+      <button class="filter-pill" onclick="showRoadmap('javascript',this)">⚡ JavaScript</button>
+      <button class="filter-pill" onclick="showRoadmap('cpp',this)">⚙️ C++</button>
+      <button class="filter-pill" onclick="showRoadmap('java',this)">☕ Java</button>
+    </div>
+    <div id="roadmapContent" class="rm-list"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="view-quiz" class="view">
+  <div class="quiz-wrap" id="quizWrap"></div>
+</div>
+
+<!-- PROFILE -->
+<div id="view-profile" class="view">
+  <div class="sec">
+    <div class="sec-title" style="margin-bottom:18px;">📊 Your Progress</div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <div class="profile-av">P</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;">ProGGin Learner</div>
+            <div style="font-size:.78rem;color:var(--text2);margin-top:2px;">Keep coding every day! 🚀</div>
+          </div>
+        </div>
+        <div class="pstat-grid">
+          <div class="pstat"><div class="n" id="pLessons">0</div><div class="l">Lessons</div></div>
+          <div class="pstat"><div class="n" id="pQuizzes">0</div><div class="l">Quizzes</div></div>
+          <div class="pstat"><div class="n" id="pAvg">–</div><div class="l">Quiz Avg</div></div>
+          <div class="pstat"><div class="n" id="pCourses">0</div><div class="l">Courses Active</div></div>
+        </div>
+      </div>
+      <div class="profile-card">
+        <div style="font-weight:700;margin-bottom:12px;">📊 Course Progress</div>
+        <div id="courseProgressList"></div>
+      </div>
+      <div class="profile-card" style="grid-column:1/-1;">
+        <div style="font-weight:700;margin-bottom:12px;">🏆 Achievements</div>
+        <div id="achievementsList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════
+   STORAGE
+══════════════════════════════ */
+const S={
+  get:k=>{try{return JSON.parse(localStorage.getItem('pg_'+k))}catch{return null}},
+  set:(k,v)=>localStorage.setItem('pg_'+k,JSON.stringify(v))
+};
+let doneLessons=new Set(S.get('done')||[]);
+let quizScores=S.get('scores')||[];
+let currentCourse=null,currentLesson=null;
+let quizData=[],quizIdx=0,quizScore=0,quizAnswered=false;
+
+/* ══════════════════════════════
+   THEME
+══════════════════════════════ */
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+  S.set('theme',t);
+  showToast(t==='light'?'☀️ Light mode':'🌙 Dark mode','ok');
+}
+(()=>{const t=S.get('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+
+/* ══════════════════════════════
+   SIDEBAR
+══════════════════════════════ */
+let sbOpen=true;
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const m=document.getElementById('mainArea');
+  const t=document.getElementById('sbToggle');
+  sbOpen=!sbOpen;
+  if(sbOpen){sb.classList.remove('collapsed');m.classList.remove('wide');t.innerHTML='&#8249;';t.style.left='240px';}
+  else{sb.classList.add('collapsed');m.classList.add('wide');t.innerHTML='&#8250;';t.style.left='0';}
+}
+// Init toggle position
+document.getElementById('sbToggle').innerHTML='&#8249;';
+document.getElementById('sbToggle').style.left='240px';
+
+/* ══════════════════════════════
+   VIEWS
+══════════════════════════════ */
+const viewNames=['home','courses','practice','cheatsheet','roadmap','profile'];
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const v=document.getElementById('view-'+name);
+  if(v){v.classList.add('active');v.classList.remove('fade');void v.offsetWidth;v.classList.add('fade');}
+  const idx=viewNames.indexOf(name);
+  const tabs=[...document.querySelectorAll('.nav-tab')];
+  if(idx>=0&&tabs[idx])tabs[idx].classList.add('active');
+  if(name==='home')buildHomeGrid();
+  if(name==='courses')buildCoursesGrid();
+  if(name==='practice')refreshChallenges();
+  if(name==='cheatsheet'){const fp=document.querySelector('#cheatFilter .filter-pill');showCheatsheet('python',fp);}
+  if(name==='roadmap'){const fp=document.querySelector('#view-roadmap .filter-pill');showRoadmap('python',fp);}
+  if(name==='profile')populateProfile();
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* ══════════════════════════════
+   COURSES DATA
+══════════════════════════════ */
+const COURSES={
+python:{
+  name:'Python',icon:'🐍',
+  stripe:'linear-gradient(90deg,#3b82f6,#06b6d4)',
+  color:'rgba(59,130,246,0.07)',
+  level:'Beginner → Advanced',
+  desc:'The most beginner-friendly language. Variables, OOP, decorators, generators, and data science.',
+  sections:[
+    {title:'🟢 Beginner',lessons:[
+      {id:'py1',title:'Introduction & Setup',lang:'python',
+       theory:`<p>Python is a high-level, interpreted language created by <strong>Guido van Rossum</strong> in 1991. It emphasizes readability and simplicity.</p>
+<div class="callout callout-b"><strong>Why Python?</strong> Powers AI/ML (TensorFlow), web dev (Django/Flask), data science (Pandas, NumPy), automation, and scripting. #1 language for beginners and professionals alike.</div>
+<p>Key characteristics:</p>
+<ul>
+<li><strong>Interpreted</strong> — runs line by line, no compilation needed</li>
+<li><strong>Dynamically typed</strong> — no type declarations needed</li>
+<li><strong>Indentation-based</strong> — 4 spaces for code blocks</li>
+<li><strong>Cross-platform</strong> — runs the same on Windows, Mac, Linux</li>
+<li><strong>Batteries included</strong> — huge standard library</li>
+</ul>
+<div class="callout callout-g"><strong>💡 Run Python:</strong> Save as <code>hello.py</code> and run: <code>python3 hello.py</code></div>`,
+       code:`# Hello, World!
+print("Hello, World!")
+
+# Variables — no type declaration needed
+name = "Alice"        # string
+age = 25              # integer
+height = 5.6          # float
+is_student = True     # boolean
+nothing = None        # None (null equivalent)
+
+# f-strings for string formatting (Python 3.6+)
+print(f"Name: {name}, Age: {age}")
+print(f"2 + 2 = {2+2}")
+
+# Check data types
+print(type(name))     # <class 'str'>
+print(type(age))      # <class 'int'>
+print(type(height))   # <class 'float'>
+
+# Indentation matters in Python!
+if age >= 18:
+    print(f"{name} is an adult")  # 4 spaces indent
+    print("Welcome!")`},
+
+      {id:'py2',title:'Variables & Data Types',lang:'python',
+       theory:`<p>Python has several built-in data types. Variables are created the moment you assign a value — no prior declaration needed.</p>
+<div class="callout callout-b"><strong>Core Types:</strong><br>• <code>int</code> — whole numbers: 42, -10, 0<br>• <code>float</code> — decimals: 3.14, -0.5<br>• <code>str</code> — text: "hello", 'world'<br>• <code>bool</code> — True or False (capitalized)<br>• <code>NoneType</code> — None (absence of value)</div>
+<p><strong>Type conversion:</strong> Use <code>int()</code>, <code>float()</code>, <code>str()</code>, <code>bool()</code> to convert between types explicitly.</p>
+<div class="callout callout-y"><strong>⚠️ Case Sensitivity:</strong> <code>Name</code> and <code>name</code> are completely different variables!</div>`,
+       code:`# Integers
+age = 25
+big = 1_000_000    # underscores for readability
+neg = -42
+
+# Floats
+pi = 3.14159
+sci = 1.5e10       # scientific notation
+
+# Strings
+single = 'Hello'
+double = "World"
+multi = """This is
+a multiline string"""
+
+# String methods
+s = "  Hello, Python!  "
+print(s.strip())           # remove whitespace
+print(s.lower())
+print(s.upper())
+print(s.replace("Python","World"))
+print(len(s))              # length
+print("Python" in s)      # True
+print(s.split(","))
+
+# Booleans
+print(int(True))   # 1
+print(int(False))  # 0
+
+# Type conversion
+age_str = "25"
+age_int = int(age_str)     # "25" → 25
+price = float("9.99")      # "9.99" → 9.99
+code = str(100)            # 100 → "100"
+flag = bool(0)             # 0 → False
+flag2 = bool("")           # "" → False (falsy!)
+flag3 = bool("hello")      # "hello" → True
+
+# Multiple assignment
+x, y, z = 10, 20, 30
+a = b = c = 0
+print(f"x={x}, y={y}, z={z}")`},
+
+      {id:'py3',title:'Control Flow',lang:'python',
+       theory:`<p>Control flow statements let your program make decisions and repeat actions.</p>
+<div class="callout callout-b"><strong>if / elif / else:</strong> Executes code based on conditions.<br><strong>for:</strong> Iterates over a sequence.<br><strong>while:</strong> Loops while a condition is True.</div>
+<p><strong>Truthy/Falsy:</strong> These are False: <code>0</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>None</code>. Everything else is truthy.</p>
+<div class="callout callout-g"><strong>💡 Ternary:</strong> <code>x if condition else y</code> — one-line conditional.</div>`,
+       code:`# if / elif / else
+score = 82
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+print(f"Grade: {grade}")  # B
+
+# Ternary operator
+status = "adult" if score >= 18 else "minor"
+
+# for loop
+fruits = ["apple","banana","cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# range()
+for i in range(5):       # 0,1,2,3,4
+    print(i, end=" ")
+print()
+
+for i in range(2, 10, 2): # 2,4,6,8
+    print(i, end=" ")
+print()
+
+# while loop
+count = 0
+while count < 3:
+    print(f"Count: {count}")
+    count += 1
+
+# break and continue
+for i in range(10):
+    if i == 3:
+        continue   # skip 3
+    if i == 7:
+        break      # stop at 7
+    print(i, end=" ")
+print()
+
+# enumerate (get index + value)
+for idx, fruit in enumerate(fruits):
+    print(f"{idx}: {fruit}")`},
+
+      {id:'py4',title:'Functions',lang:'python',
+       theory:`<p>Functions let you reuse code. Python functions support default arguments, *args, **kwargs, and return multiple values.</p>
+<div class="callout callout-b"><strong>def keyword:</strong> Defines a function.<br><strong>return:</strong> Returns a value.<br><strong>Docstrings:</strong> Triple-quoted strings after def — document what the function does.</div>
+<div class="callout callout-g"><strong>💡 Lambda:</strong> <code>lambda x: x*2</code> — anonymous one-liner function.</div>`,
+       code:`# Basic function
+def greet(name):
+    """Say hello to someone."""
+    return f"Hello, {name}!"
+
+print(greet("Alice"))
+
+# Default arguments
+def power(base, exponent=2):
+    return base ** exponent
+
+print(power(3))      # 9 (exponent=2 default)
+print(power(2, 10))  # 1024
+
+# Multiple return values
+def min_max(numbers):
+    return min(numbers), max(numbers)
+
+lo, hi = min_max([3, 1, 4, 1, 5, 9])
+print(f"Min: {lo}, Max: {hi}")
+
+# *args — variable positional args
+def add_all(*args):
+    return sum(args)
+
+print(add_all(1, 2, 3, 4))  # 10
+
+# **kwargs — variable keyword args
+def display(**kwargs):
+    for key, val in kwargs.items():
+        print(f"{key} = {val}")
+
+display(name="Alice", age=25, city="NYC")
+
+# Lambda (anonymous function)
+square = lambda x: x ** 2
+nums = [1,2,3,4,5]
+squared = list(map(square, nums))
+print(squared)  # [1, 4, 9, 16, 25]
+
+# Filter with lambda
+evens = list(filter(lambda x: x%2==0, nums))
+print(evens)    # [2, 4]`},
+    ]},
+
+    {title:'🟡 Intermediate',lessons:[
+      {id:'py5',title:'Lists, Tuples & Sets',lang:'python',
+       theory:`<p>Python has 4 main collection types. Each serves a different purpose.</p>
+<div class="callout callout-b"><strong>List</strong> []: Ordered, mutable, allows duplicates<br><strong>Tuple</strong> (): Ordered, immutable, allows duplicates<br><strong>Set</strong> {}: Unordered, mutable, NO duplicates<br><strong>Dict</strong> {}: Key-value pairs (next lesson)</div>`,
+       code:`# ── LISTS ──
+fruits = ["apple","banana","cherry","apple"]
+fruits.append("mango")        # add to end
+fruits.insert(1, "orange")    # insert at index
+fruits.remove("apple")        # remove first occurrence
+popped = fruits.pop()         # remove & return last
+print(fruits)
+print(len(fruits))
+
+# Slicing [start:end:step]
+nums = [0,1,2,3,4,5,6,7,8,9]
+print(nums[2:7])      # [2,3,4,5,6]
+print(nums[::2])      # [0,2,4,6,8] every 2nd
+print(nums[::-1])     # reversed
+
+# List comprehension (Pythonic!)
+squares = [x**2 for x in range(1,6)]
+evens = [x for x in range(20) if x%2==0]
+print(squares)  # [1,4,9,16,25]
+print(evens)
+
+# Sorting
+nums_copy = [3,1,4,1,5,9]
+nums_copy.sort()          # in-place
+sorted_copy = sorted(nums_copy, reverse=True)
+
+# ── TUPLES ──
+coords = (10, 20)
+x, y = coords   # unpacking
+print(f"x={x}, y={y}")
+# coords[0] = 99  # TypeError! tuples are immutable
+
+# ── SETS ──
+unique = {1,2,3,3,4,4,5}  # {1,2,3,4,5}
+s1 = {1,2,3,4}
+s2 = {3,4,5,6}
+print(s1 & s2)   # intersection {3,4}
+print(s1 | s2)   # union {1,2,3,4,5,6}
+print(s1 - s2)   # difference {1,2}`},
+
+      {id:'py6',title:'Dictionaries',lang:'python',
+       theory:`<p>Dictionaries store key-value pairs. They are unordered (Python 3.7+ maintains insertion order), mutable, and keys must be unique.</p>
+<div class="callout callout-b"><strong>dict comprehension:</strong> <code>{k: v for k, v in items}</code><br><strong>.get():</strong> Safe access — returns None (or default) if key missing, no crash.</div>`,
+       code:`# Create dict
+person = {
+    "name": "Alice",
+    "age": 25,
+    "city": "NYC",
+    "skills": ["Python","SQL"]
+}
+
+# Access
+print(person["name"])           # Alice
+print(person.get("height", 0)) # 0 (default, no crash)
+
+# Modify
+person["age"] = 26
+person["email"] = "alice@example.com"
+del person["city"]
+
+# Iterate
+for key, val in person.items():
+    print(f"{key}: {val}")
+
+print(list(person.keys()))
+print(list(person.values()))
+
+# Nested dict
+students = {
+    "alice": {"gpa": 3.9, "major": "CS"},
+    "bob":   {"gpa": 3.5, "major": "Math"},
+}
+print(students["alice"]["gpa"])  # 3.9
+
+# Dict comprehension
+squares = {x: x**2 for x in range(1,6)}
+print(squares)  # {1:1, 2:4, 3:9, 4:16, 5:25}
+
+# Merge dicts (Python 3.9+)
+d1 = {"a":1,"b":2}
+d2 = {"b":3,"c":4}
+merged = d1 | d2   # {"a":1,"b":3,"c":4}
+print(merged)`},
+
+      {id:'py7',title:'OOP — Classes & Objects',lang:'python',
+       theory:`<p>Object-Oriented Programming (OOP) organizes code around objects that combine data (attributes) and behavior (methods).</p>
+<div class="callout callout-b"><strong>4 OOP Pillars:</strong><br>• <strong>Encapsulation</strong> — bundle data + methods<br>• <strong>Inheritance</strong> — child class reuses parent<br>• <strong>Polymorphism</strong> — same method, different behavior<br>• <strong>Abstraction</strong> — hide complexity</div>
+<div class="callout callout-g"><strong>self</strong> refers to the current instance — always first parameter of instance methods.</div>`,
+       code:`class Animal:
+    # Class variable (shared by all instances)
+    kingdom = "Animalia"
+
+    def __init__(self, name, sound):
+        # Instance variables
+        self.name = name
+        self.sound = sound
+        self._age = 0  # _ prefix = protected convention
+
+    def speak(self):
+        return f"{self.name} says {self.sound}!"
+
+    def __str__(self):  # string representation
+        return f"Animal({self.name})"
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, val):
+        if val < 0: raise ValueError("Age can't be negative")
+        self._age = val
+
+# Inheritance
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name, "Woof")  # call parent __init__
+        self.breed = breed
+
+    def speak(self):   # Override parent method
+        return f"{super().speak()} *wags tail*"
+
+    def fetch(self, item):
+        return f"{self.name} fetched the {item}!"
+
+class Cat(Animal):
+    def __init__(self, name):
+        super().__init__(name, "Meow")
+
+# Polymorphism
+animals = [Dog("Rex","Labrador"), Cat("Whiskers"), Dog("Buddy","Poodle")]
+for a in animals:
+    print(a.speak())   # each calls its own speak()
+
+rex = Dog("Rex","Lab")
+rex.age = 3
+print(f"Age: {rex.age}")
+print(rex.fetch("ball"))`},
+    ]},
+
+    {title:'🔴 Advanced',lessons:[
+      {id:'py8',title:'Decorators & Generators',lang:'python',
+       theory:`<p>Decorators wrap functions to add behavior without modifying them. Generators produce values lazily — great for memory efficiency.</p>
+<div class="callout callout-b"><strong>Decorator:</strong> A function that takes a function and returns a new function.<br><strong>Generator:</strong> Uses <code>yield</code> instead of <code>return</code> — values computed on demand.</div>`,
+       code:`import time, functools
+
+# ── DECORATORS ──
+def timer(func):
+    @functools.wraps(func)  # preserve metadata
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+def require_positive(func):
+    @functools.wraps(func)
+    def wrapper(n):
+        if n < 0: raise ValueError("Must be positive!")
+        return func(n)
+    return wrapper
+
+@timer
+@require_positive
+def factorial(n):
+    if n == 0: return 1
+    return n * factorial(n-1)
+
+print(factorial(10))
+
+# ── GENERATORS ──
+def fibonacci():
+    a, b = 0, 1
+    while True:         # infinite sequence!
+        yield a         # pause and produce value
+        a, b = b, a+b
+
+fib = fibonacci()
+first_10 = [next(fib) for _ in range(10)]
+print(first_10)  # [0,1,1,2,3,5,8,13,21,34]
+
+# Generator expression (lazy list comprehension)
+squares_gen = (x**2 for x in range(1,1000001))
+print(next(squares_gen))  # 1 — computed on demand!
+print(sum(x for x in range(101)))  # 5050`},
+
+      {id:'py9',title:'Error Handling & File I/O',lang:'python',
+       theory:`<p>Proper error handling makes programs robust. Python uses try/except/finally. File I/O reads and writes files safely with context managers.</p>
+<div class="callout callout-b"><strong>try/except:</strong> Catch exceptions gracefully.<br><strong>finally:</strong> Always runs — cleanup code.<br><strong>with:</strong> Context manager — auto-closes files.</div>`,
+       code:`# ── ERROR HANDLING ──
+def divide(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print("Error: Cannot divide by zero!")
+        return None
+    except TypeError as e:
+        print(f"Type error: {e}")
+        return None
+    else:
+        print("Division successful!")  # runs if no exception
+        return result
+    finally:
+        print("divide() finished")    # always runs
+
+print(divide(10, 2))   # 5.0
+print(divide(10, 0))   # ZeroDivisionError caught
+
+# Custom exceptions
+class ValidationError(ValueError):
+    def __init__(self, field, msg):
+        self.field = field
+        super().__init__(f"'{field}': {msg}")
+
+def validate_age(age):
+    if not isinstance(age, int):
+        raise ValidationError("age", "must be an integer")
+    if age < 0 or age > 150:
+        raise ValidationError("age", "must be 0-150")
+    return True
+
+try:
+    validate_age(-5)
+except ValidationError as e:
+    print(f"Validation failed — {e}")
+
+# ── FILE I/O (simulated for browser) ──
+import json
+
+# Writing/reading JSON (common in real apps)
+data = {"name":"Alice","scores":[95,87,92],"active":True}
+json_str = json.dumps(data, indent=2)
+print(json_str)
+
+loaded = json.loads(json_str)
+print(f"Name: {loaded['name']}")`},
+    ]},
+  ]
+},
+
+javascript:{
+  name:'JavaScript',icon:'⚡',
+  stripe:'linear-gradient(90deg,#f59e0b,#ef4444)',
+  color:'rgba(245,158,11,0.07)',
+  level:'Beginner → Advanced',
+  desc:'The language of the web. Master JS from basics to async/await, closures, prototypes, and modern ES6+.',
+  sections:[
+    {title:'🟢 Beginner',lessons:[
+      {id:'js1',title:'Introduction to JavaScript',lang:'javascript',
+       theory:`<p>JavaScript is the only language that runs natively in web browsers. It powers interactive UIs, Node.js servers, mobile apps (React Native), and desktop apps (Electron).</p>
+<div class="callout callout-b"><strong>Three pillars of the web:</strong><br>• <strong>HTML</strong> — structure (skeleton)<br>• <strong>CSS</strong> — style (appearance)<br>• <strong>JavaScript</strong> — behavior (interaction)</div>
+<p>JavaScript is: dynamically typed, interpreted (JIT-compiled), prototype-based, and single-threaded with an event loop.</p>
+<div class="callout callout-g"><strong>💡 ES6+:</strong> Modern JavaScript (ES2015 and later) introduced <code>let</code>/<code>const</code>, arrow functions, classes, modules, and more.</div>`,
+       code:`// Hello World
+console.log("Hello, World!");
+
+// Variables
+let name = "Alice";        // mutable (can change)
+const PI = 3.14159;        // immutable constant
+var old = "avoid var";     // old way — avoid in modern JS
+
+// Data types
+let num = 42;              // number (no int/float split)
+let dec = 3.14;            // also number
+let str = "Hello";         // string
+let bool = true;           // boolean (lowercase!)
+let nothing = null;        // intentional absence
+let undef = undefined;     // variable declared but not assigned
+let sym = Symbol("id");    // unique identifier
+let big = 9007199254740992n; // BigInt
+
+// Template literals (backticks)
+console.log(\`Name: \${name}, PI: \${PI}\`);
+console.log(\`2 + 2 = \${2 + 2}\`);
+console.log(\`Multi
+line\`);
+
+// typeof operator
+console.log(typeof num);    // "number"
+console.log(typeof str);    // "string"
+console.log(typeof bool);   // "boolean"
+console.log(typeof null);   // "object" (historic bug!)
+console.log(typeof undef);  // "undefined"`},
+
+      {id:'js2',title:'Functions (Arrow & Regular)',lang:'javascript',
+       theory:`<p>JavaScript has multiple ways to define functions. Modern JS prefers arrow functions for their concise syntax and lexical <code>this</code> binding.</p>
+<div class="callout callout-b"><strong>Function Declaration:</strong> Hoisted — can call before definition.<br><strong>Function Expression:</strong> Not hoisted.<br><strong>Arrow Function:</strong> Concise, no own <code>this</code>.</div>
+<div class="callout callout-y"><strong>⚠️ Hoisting:</strong> <code>function</code> declarations are moved to top of scope. <code>let</code>/<code>const</code> are NOT.</div>`,
+       code:`// Function declaration (hoisted)
+console.log(add(2, 3)); // 5 — works before definition!
+function add(a, b) {
+    return a + b;
+}
+
+// Function expression (not hoisted)
+const multiply = function(a, b) {
+    return a * b;
+};
+
+// Arrow function (ES6+)
+const square = (x) => x * x;         // implicit return
+const cube = x => x * x * x;         // single param: no ()
+const sum = (a, b) => a + b;
+const greet = name => \`Hello, \${name}!\`;
+
+// Multi-line arrow (needs { } and explicit return)
+const power = (base, exp) => {
+    let result = 1;
+    for (let i = 0; i < exp; i++) result *= base;
+    return result;
+};
+
+// Default parameters
+const greetUser = (name = "Guest", title = "Mr/Ms") =>
+    \`Hello, \${title} \${name}!\`;
+console.log(greetUser());              // Hello, Mr/Ms Guest!
+console.log(greetUser("Alice","Dr.")); // Hello, Dr. Alice!
+
+// Rest parameters
+const sumAll = (...nums) => nums.reduce((a,b) => a+b, 0);
+console.log(sumAll(1,2,3,4,5)); // 15
+
+// IIFE (Immediately Invoked Function Expression)
+const result = ((x, y) => x + y)(10, 20);
+console.log(result); // 30
+
+console.log(square(5));  // 25
+console.log(greet("Bob")); // Hello, Bob!`},
+
+      {id:'js3',title:'Arrays & Objects',lang:'javascript',
+       theory:`<p>Arrays and objects are the backbone of JavaScript data structures. Modern JS has powerful spread, destructuring, and iteration methods.</p>
+<div class="callout callout-b"><strong>Array methods:</strong> map, filter, reduce, find, some, every, flat<br><strong>Object methods:</strong> Object.keys(), values(), entries(), assign()</div>`,
+       code:`// ── ARRAYS ──
+const fruits = ["apple","banana","cherry"];
+fruits.push("mango");     // add to end
+fruits.unshift("kiwi");   // add to start
+const last = fruits.pop();  // remove from end
+const first = fruits.shift(); // remove from start
+
+// Modern array methods
+const nums = [1,2,3,4,5,6,7,8,9,10];
+const doubled = nums.map(x => x * 2);
+const evens = nums.filter(x => x % 2 === 0);
+const total = nums.reduce((acc, x) => acc + x, 0);
+const found = nums.find(x => x > 5);   // 6 (first match)
+const hasOdd = nums.some(x => x % 2 !== 0);  // true
+const allPos = nums.every(x => x > 0);       // true
+
+console.log("doubled:", doubled);
+console.log("evens:", evens);
+console.log("total:", total);
+console.log("found:", found);
+
+// Destructuring
+const [a, b, ...rest] = nums;
+console.log(a, b, rest.slice(0,3)); // 1 2 [3,4,5]
+
+// Spread
+const more = [...nums, 11, 12, 13];
+console.log(more.slice(-3)); // [11,12,13]
+
+// ── OBJECTS ──
+const person = {
+    name: "Alice",
+    age: 25,
+    skills: ["JS","Python"],
+    greet() { return \`Hi, I'm \${this.name}\`; }
+};
+
+// Destructuring
+const { name, age, skills: [s1, s2] } = person;
+console.log(name, age, s1, s2);
+
+// Spread & merge
+const extra = { city: "NYC", active: true };
+const full = { ...person, ...extra };
+console.log(full.city);  // NYC
+
+// Optional chaining (?.)
+const user = { profile: { bio: "Dev" } };
+console.log(user?.profile?.bio);    // "Dev"
+console.log(user?.address?.street); // undefined (no crash!)`},
+
+      {id:'js4',title:'Async JS — Promises & Async/Await',lang:'javascript',
+       theory:`<p>JavaScript is single-threaded but handles async operations (network requests, timers) via the event loop. Modern JS uses Promises and async/await.</p>
+<div class="callout callout-b"><strong>Callback</strong> (old): nested, "callback hell"<br><strong>Promise</strong>: .then()/.catch() chain<br><strong>async/await</strong>: clean, synchronous-looking async code</div>
+<div class="callout callout-g"><strong>💡 async function</strong> always returns a Promise. <strong>await</strong> pauses until Promise resolves.</div>`,
+       code:`// Simulated delay (like a network request)
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// ── PROMISES ──
+function fetchUser(id) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (id > 0) {
+                resolve({ id, name: "Alice", role: "Admin" });
+            } else {
+                reject(new Error("Invalid ID"));
+            }
+        }, 500);
+    });
+}
+
+fetchUser(1)
+    .then(user => console.log("Fetched:", user.name))
+    .catch(err => console.error("Error:", err.message));
+
+// ── ASYNC/AWAIT (cleaner!) ──
+async function loadUser(id) {
+    try {
+        const user = await fetchUser(id);
+        console.log(\`User: \${user.name} (\${user.role})\`);
+        return user;
+    } catch (err) {
+        console.error("Failed:", err.message);
+    }
+}
+
+loadUser(1);
+loadUser(-1); // triggers error
+
+// Promise.all — run multiple promises in parallel
+async function fetchAll() {
+    const [u1, u2] = await Promise.all([
+        fetchUser(1),
+        fetchUser(2)
+    ]);
+    console.log("Both done!");
+}
+
+// Async IIFE
+(async () => {
+    console.log("Starting...");
+    await delay(100);
+    console.log("Done after delay!");
+})();`},
+    ]},
+
+    {title:'🟡 Intermediate',lessons:[
+      {id:'js5',title:'Closures & Scope',lang:'javascript',
+       theory:`<p>A closure is a function that retains access to variables from its outer scope, even after the outer function has returned. Closures are fundamental to JS patterns like data privacy and currying.</p>
+<div class="callout callout-b"><strong>Lexical scope:</strong> Inner functions access outer scope variables.<br><strong>Closure:</strong> That access persists even after outer function returns.</div>`,
+       code:`// Basic closure
+function makeCounter(start = 0) {
+    let count = start;  // private variable!
+    return {
+        increment: () => ++count,
+        decrement: () => --count,
+        value: () => count,
+        reset: () => { count = start; }
+    };
+}
+
+const counter = makeCounter(10);
+console.log(counter.increment()); // 11
+console.log(counter.increment()); // 12
+console.log(counter.decrement()); // 11
+console.log(counter.value());     // 11
+counter.reset();
+console.log(counter.value());     // 10
+
+// count is private — can't access directly!
+
+// Currying with closures
+const multiply = a => b => a * b;
+const double = multiply(2);
+const triple = multiply(3);
+console.log(double(5));  // 10
+console.log(triple(5));  // 15
+
+// Memoization (caching with closures)
+function memoize(fn) {
+    const cache = {};
+    return function(...args) {
+        const key = JSON.stringify(args);
+        if (key in cache) {
+            console.log("Cache hit!");
+            return cache[key];
+        }
+        cache[key] = fn(...args);
+        return cache[key];
+    };
+}
+
+const fib = memoize(function f(n) {
+    return n <= 1 ? n : f(n-1) + f(n-2);
+});
+console.log(fib(10)); // 55`},
+
+      {id:'js6',title:'Classes & Prototypes',lang:'javascript',
+       theory:`<p>ES6 classes are syntactic sugar over JavaScript's prototype-based inheritance. Understanding both is key for advanced JS.</p>
+<div class="callout callout-b"><strong>class:</strong> Blueprint for objects.<br><strong>constructor():</strong> Runs when new instance created.<br><strong>extends:</strong> Inheritance.<br><strong>super():</strong> Call parent constructor/methods.</div>`,
+       code:`class Shape {
+    #area = 0; // private field (#)
+
+    constructor(color = "black") {
+        this.color = color;
+    }
+
+    getInfo() {
+        return \`Color: \${this.color}, Area: \${this.#area.toFixed(2)}\`;
+    }
+
+    // Static method (called on class, not instance)
+    static create(type, ...args) {
+        if (type === "circle") return new Circle(...args);
+        if (type === "rect") return new Rectangle(...args);
+    }
+}
+
+class Circle extends Shape {
+    #radius;
+
+    constructor(radius, color) {
+        super(color);     // MUST call super() first!
+        this.#radius = radius;
+    }
+
+    get area() { return Math.PI * this.#radius ** 2; }
+    get circumference() { return 2 * Math.PI * this.#radius; }
+
+    getInfo() {
+        return \`Circle(r=\${this.#radius}): \${super.getInfo()}, ` +
+               `area=\${this.area.toFixed(2)}\`;
+    }
+}
+
+class Rectangle extends Shape {
+    constructor(width, height, color) {
+        super(color);
+        this.width = width;
+        this.height = height;
+    }
+    get area() { return this.width * this.height; }
+}
+
+const c = new Circle(5, "red");
+const r = new Rectangle(4, 6, "blue");
+console.log(c.getInfo());
+console.log(\`Rect area: \${r.area}\`);
+
+const auto = Shape.create("circle", 3, "green");
+console.log(auto instanceof Circle); // true`},
+    ]},
+
+    {title:'🔴 Advanced',lessons:[
+      {id:'js7',title:'Modules & Design Patterns',lang:'javascript',
+       theory:`<p>ES modules enable code organization and reuse. Design patterns are proven solutions to common software problems.</p>
+<div class="callout callout-b"><strong>Module pattern:</strong> Encapsulate code.<br><strong>Observer pattern:</strong> Event-driven architecture.<br><strong>Singleton:</strong> One instance only.</div>`,
+       code:`// ── MODULE PATTERN (IIFE) ──
+const Store = (() => {
+    let state = { count: 0, items: [] };
+    const listeners = [];
+
+    return {
+        getState: () => ({ ...state }),  // return copy (immutable)
+        increment() { state.count++; this._notify(); },
+        addItem(item) { state.items.push(item); this._notify(); },
+        subscribe(fn) { listeners.push(fn); },
+        _notify() { listeners.forEach(fn => fn(state)); }
+    };
+})();
+
+Store.subscribe(state => console.log("State:", state.count));
+Store.increment();
+Store.increment();
+Store.addItem("apple");
+console.log(Store.getState());
+
+// ── OBSERVER PATTERN ──
+class EventEmitter {
+    #events = {};
+    on(event, fn) {
+        (this.#events[event] ??= []).push(fn);
+    }
+    off(event, fn) {
+        this.#events[event] = (this.#events[event]||[]).filter(f=>f!==fn);
+    }
+    emit(event, ...args) {
+        (this.#events[event]||[]).forEach(fn=>fn(...args));
+    }
+}
+
+class Button extends EventEmitter {
+    click() { this.emit("click", { time: Date.now() }); }
+    hover() { this.emit("hover"); }
+}
+
+const btn = new Button();
+btn.on("click", e => console.log("Clicked at:", e.time));
+btn.on("hover", () => console.log("Hovered!"));
+btn.click();
+btn.hover();
+
+// ── SINGLETON ──
+class Config {
+    static #instance;
+    #settings = {};
+    static getInstance() {
+        return (Config.#instance ??= new Config());
+    }
+    set(key, val) { this.#settings[key] = val; }
+    get(key) { return this.#settings[key]; }
+}
+
+const c1 = Config.getInstance();
+const c2 = Config.getInstance();
+c1.set("theme","dark");
+console.log(c2.get("theme")); // "dark" — same instance!
+console.log(c1 === c2);       // true`},
+    ]},
+  ]
+},
+
+cpp:{
+  name:'C++',icon:'⚙️',
+  stripe:'linear-gradient(90deg,#6366f1,#8b5cf6)',
+  color:'rgba(99,102,241,0.07)',
+  level:'Beginner → Advanced',
+  desc:'High-performance systems language. Learn C++ from basics through pointers, templates, STL, and memory management.',
+  sections:[
+    {title:'🟢 Beginner',lessons:[
+      {id:'cpp1',title:'Introduction to C++',lang:'cpp',
+       theory:`<p>C++ is a compiled, statically-typed, multi-paradigm language by <strong>Bjarne Stroustrup</strong> (1985). It extends C with OOP, templates, and the STL.</p>
+<div class="callout callout-b"><strong>Used for:</strong> Game engines (Unreal), operating systems, browsers (Chrome), databases (MySQL), embedded systems, compilers, HFT.</div>
+<p>Key characteristics:</p>
+<ul>
+<li><strong>Compiled</strong> — translated to machine code before execution</li>
+<li><strong>Statically typed</strong> — types checked at compile time</li>
+<li><strong>Manual memory management</strong> — you control heap with new/delete</li>
+<li><strong>Zero-cost abstractions</strong> — high-level features with no runtime overhead</li>
+</ul>
+<div class="callout callout-y"><strong>⚠️ Run locally:</strong> C++ can't run in browser. Copy code → compile with <code>g++ file.cpp -o app && ./app</code></div>`,
+       code:`// Every C++ program starts at main()
+#include <iostream>   // for cout, cin
+#include <string>     // for string type
+using namespace std;  // avoid writing std::cout etc.
+
+int main() {
+    // Output
+    cout << "Hello, World!" << endl;
+
+    // Variables — types are REQUIRED!
+    int age = 25;
+    double height = 5.9;
+    char grade = 'A';
+    bool isActive = true;
+    string name = "Alice";
+
+    // auto — compiler infers type
+    auto pi = 3.14159;   // double
+    auto count = 42;     // int
+    auto msg = string("Hello"); // string
+
+    // Output with <<
+    cout << "Name: " << name << ", Age: " << age << endl;
+    cout << "Height: " << height << endl;
+    cout << "Grade: " << grade << endl;
+
+    // Input with >>
+    // cout << "Enter your name: ";
+    // cin >> name;   // reads until whitespace
+    // getline(cin, name);  // reads full line
+
+    // Constants
+    const double TAX_RATE = 0.08;
+    // TAX_RATE = 0.09;  // ERROR: const can't change
+
+    cout << "Tax rate: " << TAX_RATE << endl;
+
+    return 0;  // 0 = success
+}`},
+
+      {id:'cpp2',title:'Control Flow & Functions',lang:'cpp',
+       theory:`<p>C++ control flow is similar to C but with extra features. Functions require explicit return types and can be overloaded.</p>
+<div class="callout callout-b"><strong>Function overloading:</strong> Same function name, different parameter types.<br><strong>Default arguments:</strong> Parameters with default values.<br><strong>Inline functions:</strong> Hint compiler to expand function at call site.</div>`,
+       code:`#include <iostream>
+#include <cmath>     // for sqrt, pow
+using namespace std;
+
+// Function prototypes (declare before use)
+int factorial(int n);
+double circleArea(double r);
+void printResult(string label, double val);
+
+// Function overloading — same name, different types
+int add(int a, int b) { return a + b; }
+double add(double a, double b) { return a + b; }
+string add(string a, string b) { return a + b; }
+
+// Default parameters
+void greet(string name, string title = "Friend") {
+    cout << "Hello, " << title << " " << name << "!" << endl;
+}
+
+// Inline function (expanded at call site)
+inline int square(int x) { return x * x; }
+
+int main() {
+    // if / else if / else
+    int score = 85;
+    if (score >= 90) cout << "A";
+    else if (score >= 80) cout << "B";
+    else if (score >= 70) cout << "C";
+    else cout << "F";
+    cout << endl;
+
+    // for loop
+    for (int i = 1; i <= 5; i++) {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    // while loop
+    int n = 1;
+    while (n <= 32) { cout << n << " "; n *= 2; }
+    cout << endl;
+
+    // Range-based for (C++11)
+    int nums[] = {1,2,3,4,5};
+    for (int x : nums) cout << x << " ";
+    cout << endl;
+
+    // switch
+    char grade = 'B';
+    switch(grade) {
+        case 'A': cout << "Excellent!"; break;
+        case 'B': cout << "Good!"; break;
+        default: cout << "Keep trying!";
+    }
+    cout << endl;
+
+    // Function calls
+    cout << add(3, 4) << endl;       // int version
+    cout << add(1.5, 2.5) << endl;   // double version
+    cout << add(string("Hi "), string("there!")) << endl;
+
+    greet("Alice");           // Hello, Friend Alice!
+    greet("Bob", "Dr.");      // Hello, Dr. Bob!
+
+    cout << factorial(5) << endl;  // 120
+    cout << square(7) << endl;     // 49
+
+    return 0;
+}
+
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+double circleArea(double r) { return M_PI * r * r; }
+void printResult(string label, double val) {
+    cout << label << ": " << val << endl;
+}`},
+
+      {id:'cpp3',title:'Arrays, Strings & Pointers',lang:'cpp',
+       theory:`<p>Pointers are variables that store memory addresses. Understanding pointers is essential for C++ memory management and performance.</p>
+<div class="callout callout-b"><strong>& (address-of):</strong> Gets memory address of a variable.<br><strong>* (dereference):</strong> Gets value at an address.<br><strong>References:</strong> Aliases — same variable, different name.</div>
+<div class="callout callout-r"><strong>🚨 Danger:</strong> Dereferencing null/dangling pointers causes crashes. Always initialize pointers!</div>`,
+       code:`#include <iostream>
+#include <string>
+#include <vector>   // dynamic array
+using namespace std;
+
+int main() {
+    // ── ARRAYS (fixed size) ──
+    int arr[5] = {10, 20, 30, 40, 50};
+    cout << arr[0] << " " << arr[4] << endl; // 10 50
+
+    // ── POINTERS ──
+    int x = 42;
+    int* ptr = &x;       // ptr stores address of x
+
+    cout << x << endl;   // 42 (value)
+    cout << &x << endl;  // memory address (e.g. 0x7ffd...)
+    cout << ptr << endl; // same address
+    cout << *ptr << endl; // 42 (dereference = get value)
+
+    *ptr = 100;          // change x through pointer!
+    cout << x << endl;   // 100 ✓
+
+    // ── REFERENCES ──
+    int y = 55;
+    int& ref = y;        // ref is an alias for y
+    ref = 200;           // changes y!
+    cout << y << endl;   // 200
+
+    // Pass by reference (modifies original)
+    auto swap = [](int& a, int& b) { int t=a; a=b; b=t; };
+    int a=10, b=20;
+    swap(a, b);
+    cout << a << " " << b << endl; // 20 10
+
+    // ── VECTORS (preferred over arrays) ──
+    vector<int> v = {1,2,3,4,5};
+    v.push_back(6);
+    v.push_back(7);
+
+    for (int val : v) cout << val << " ";
+    cout << endl;
+
+    cout << "Size: " << v.size() << endl;
+    cout << "Front: " << v.front() << endl;
+    cout << "Back: " << v.back() << endl;
+
+    v.pop_back();    // remove last
+    v.erase(v.begin() + 2);  // remove index 2
+
+    // ── STRINGS ──
+    string s = "Hello, C++!";
+    cout << s.length() << endl;     // 11
+    cout << s.substr(7, 3) << endl; // "C++"
+    cout << s.find("C++") << endl;  // 7
+    s.replace(0, 5, "Hi");
+    cout << s << endl;              // "Hi, C++!"
+
+    return 0;
+}`},
+    ]},
+
+    {title:'🟡 Intermediate',lessons:[
+      {id:'cpp4',title:'Classes & OOP',lang:'cpp',
+       theory:`<p>C++ OOP features: classes, access modifiers, constructors/destructors, inheritance, virtual functions (polymorphism), and operator overloading.</p>
+<div class="callout callout-b"><strong>Access:</strong> public (anyone), private (class only), protected (class+derived)<br><strong>virtual:</strong> Enables runtime polymorphism (overriding).<br><strong>Destructor ~:</strong> Cleanup when object destroyed.</div>`,
+       code:`#include <iostream>
+#include <vector>
+#include <string>
+#include <cmath>
+using namespace std;
+
+class Shape {
+protected:
+    string color;
+public:
+    Shape(string c = "black") : color(c) {}
+    virtual ~Shape() {}  // virtual destructor!
+    virtual double area() const = 0;        // pure virtual
+    virtual string describe() const = 0;    // pure virtual
+    string getColor() const { return color; }
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    Circle(double r, string c = "red")
+        : Shape(c), radius(r) {}
+
+    double area() const override { return M_PI * radius * radius; }
+    string describe() const override {
+        return "Circle(r=" + to_string(radius) +
+               ", color=" + color + ")";
+    }
+
+    // Operator overloading
+    bool operator>(const Circle& other) const {
+        return radius > other.radius;
+    }
+};
+
+class Rectangle : public Shape {
+    double width, height;
+public:
+    Rectangle(double w, double h, string c = "blue")
+        : Shape(c), width(w), height(h) {}
+
+    double area() const override { return width * height; }
+    string describe() const override {
+        return "Rect(" + to_string(width) + "x" +
+               to_string(height) + ", color=" + color + ")";
+    }
+};
+
+int main() {
+    // Polymorphism via pointers
+    vector<Shape*> shapes = {
+        new Circle(5.0, "red"),
+        new Rectangle(4.0, 6.0, "blue"),
+        new Circle(3.0, "green"),
+        new Rectangle(2.0, 8.0, "purple")
+    };
+
+    for (Shape* s : shapes) {
+        cout << s->describe()
+             << " | Area: " << s->area() << endl;
+    }
+
+    Circle c1(5.0), c2(3.0);
+    cout << "c1 > c2: " << (c1 > c2 ? "true" : "false") << endl;
+
+    // Cleanup
+    for (Shape* s : shapes) delete s;
+    return 0;
+}`},
+
+      {id:'cpp5',title:'Templates & STL',lang:'cpp',
+       theory:`<p>Templates enable generic programming — write once, use with any type. The STL (Standard Template Library) provides ready-to-use containers, algorithms, and iterators.</p>
+<div class="callout callout-b"><strong>Containers:</strong> vector, map, set, queue, stack, unordered_map<br><strong>Algorithms:</strong> sort, find, count, transform, accumulate<br><strong>Iterators:</strong> begin(), end(), rbegin(), rend()</div>`,
+       code:`#include <iostream>
+#include <vector>
+#include <map>
+#include <set>
+#include <algorithm>
+#include <numeric>
+#include <string>
+using namespace std;
+
+// Function template
+template<typename T>
+T maxOf(T a, T b) { return (a > b) ? a : b; }
+
+// Class template
+template<typename T>
+class Stack {
+    vector<T> data;
+public:
+    void push(T val) { data.push_back(val); }
+    T pop() { T v=data.back(); data.pop_back(); return v; }
+    T top() const { return data.back(); }
+    bool empty() const { return data.empty(); }
+    size_t size() const { return data.size(); }
+};
+
+int main() {
+    // ── TEMPLATES ──
+    cout << maxOf(3, 7) << endl;          // 7 (int)
+    cout << maxOf(3.14, 2.72) << endl;    // 3.14 (double)
+    cout << maxOf(string("apple"), string("banana")) << endl; // banana
+
+    Stack<int> intStack;
+    intStack.push(1); intStack.push(2); intStack.push(3);
+    cout << intStack.pop() << endl;  // 3
+
+    // ── MAP (key-value) ──
+    map<string,int> scores = {{"Alice",95},{"Bob",87},{"Carol",92}};
+    scores["Dave"] = 78;
+    for (auto& [name, score] : scores)  // structured bindings
+        cout << name << ": " << score << endl;
+
+    // ── SET (unique sorted) ──
+    set<int> unique = {5,3,1,4,1,5,9,2,6};
+    for (int x : unique) cout << x << " ";  // 1 2 3 4 5 6 9
+    cout << endl;
+
+    // ── ALGORITHMS ──
+    vector<int> v = {3,1,4,1,5,9,2,6,5,3};
+    sort(v.begin(), v.end());
+    cout << "Sorted: "; for(int x:v) cout<<x<<" "; cout<<endl;
+
+    int s = accumulate(v.begin(), v.end(), 0);
+    cout << "Sum: " << s << endl;
+
+    transform(v.begin(),v.end(),v.begin(),[](int x){return x*2;});
+    cout << "Doubled: "; for(int x:v) cout<<x<<" "; cout<<endl;
+
+    return 0;
+}`},
+    ]},
+
+    {title:'🔴 Advanced',lessons:[
+      {id:'cpp6',title:'Smart Pointers & Move Semantics',lang:'cpp',
+       theory:`<p>Modern C++ (C++11+) uses smart pointers for automatic memory management, eliminating most manual new/delete. Move semantics enable efficient resource transfer.</p>
+<div class="callout callout-b"><strong>unique_ptr:</strong> Exclusive ownership — one owner only.<br><strong>shared_ptr:</strong> Shared ownership — reference counted.<br><strong>weak_ptr:</strong> Non-owning reference — prevents cycles.</div>
+<div class="callout callout-g"><strong>💡 Rule of zero:</strong> Prefer smart pointers to avoid writing destructor, copy, and move yourself.</div>`,
+       code:`#include <iostream>
+#include <memory>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Resource {
+    string name;
+public:
+    Resource(string n) : name(n) {
+        cout << "Created: " << name << endl;
+    }
+    ~Resource() { cout << "Destroyed: " << name << endl; }
+    void use() { cout << "Using: " << name << endl; }
+};
+
+// unique_ptr — transfer ownership with move
+unique_ptr<Resource> createResource(string name) {
+    return make_unique<Resource>(name); // NRVO/move
+}
+
+int main() {
+    // ── UNIQUE_PTR ──
+    {
+        auto r1 = make_unique<Resource>("Unique1");
+        r1->use();
+        // Transfer ownership
+        auto r2 = move(r1);    // r1 is now null!
+        r2->use();
+        // auto r3 = r1;  // ERROR! can't copy unique_ptr
+    }  // r2 destroyed here automatically
+
+    // ── SHARED_PTR ──
+    {
+        auto s1 = make_shared<Resource>("Shared");
+        cout << "Count: " << s1.use_count() << endl; // 1
+        {
+            auto s2 = s1;  // copy! both own it
+            cout << "Count: " << s1.use_count() << endl; // 2
+            s2->use();
+        }  // s2 out of scope, count--
+        cout << "Count: " << s1.use_count() << endl; // 1
+    }  // s1 destroyed, count=0, resource freed
+
+    // ── MOVE SEMANTICS ──
+    vector<string> v1 = {"hello","world","foo"};
+    cout << "v1 size: " << v1.size() << endl; // 3
+    vector<string> v2 = move(v1);  // MOVE — no copy!
+    cout << "v1 size: " << v1.size() << endl; // 0 (moved from)
+    cout << "v2 size: " << v2.size() << endl; // 3
+
+    auto r = createResource("Factory");
+    r->use();
+
+    return 0;
+}`},
+    ]},
+  ]
+},
+
+java:{
+  name:'Java',icon:'☕',
+  stripe:'linear-gradient(90deg,#f97316,#ef4444)',
+  color:'rgba(249,115,22,0.07)',
+  level:'Beginner → Advanced',
+  desc:'Platform-independent OOP language. Learn Java from fundamentals through generics, streams, concurrency, and Spring basics.',
+  sections:[
+    {title:'🟢 Beginner',lessons:[
+      {id:'java1',title:'Introduction to Java',lang:'java',
+       theory:`<p>Java is a compiled, statically-typed, object-oriented language created by <strong>James Gosling</strong> at Sun Microsystems in 1995. "<strong>Write Once, Run Anywhere</strong>" — code compiles to bytecode that runs on the JVM.</p>
+<div class="callout callout-b"><strong>Used for:</strong> Android apps, enterprise backend (Spring), banking systems, big data (Hadoop/Spark), game servers, microservices.</div>
+<p>Key characteristics:</p>
+<ul>
+<li><strong>Compiled to bytecode</strong> — not native code; runs on JVM</li>
+<li><strong>Strongly typed</strong> — all types declared at compile time</li>
+<li><strong>Garbage collected</strong> — automatic memory management</li>
+<li><strong>Verbose but clear</strong> — explicit is better than implicit</li>
+<li><strong>Pure OOP</strong> — everything is inside a class</li>
+</ul>
+<div class="callout callout-y"><strong>⚠️ Run locally:</strong> Java runs on JVM, not in browser. Save as <code>Main.java</code>, compile with <code>javac Main.java</code>, run with <code>java Main</code></div>`,
+       code:`// Every Java file must have a class matching the filename
+public class Main {
+
+    // main() — entry point of every Java program
+    public static void main(String[] args) {
+
+        // Output
+        System.out.println("Hello, World!");
+        System.out.print("No newline ");  // no newline
+        System.out.printf("Name: %s, Age: %d%n", "Alice", 25);
+
+        // Variables — types are REQUIRED
+        int age = 25;
+        long bigNum = 9_999_999_999L;  // L suffix for long
+        double pi = 3.14159;
+        float f = 3.14f;               // f suffix for float
+        char grade = 'A';              // single quotes!
+        boolean isActive = true;
+        String name = "Alice";         // capital S — it's a class!
+
+        // var (type inference, Java 10+)
+        var count = 42;        // int
+        var message = "Hello"; // String
+
+        // String formatting
+        String formatted = String.format("Name: %s, Age: %d", name, age);
+        System.out.println(formatted);
+
+        // String methods
+        System.out.println(name.length());       // 5
+        System.out.println(name.toLowerCase());  // alice
+        System.out.println(name.toUpperCase());  // ALICE
+        System.out.println(name.charAt(0));      // A
+        System.out.println(name.contains("lic")); // true
+
+        // final = constant
+        final double TAX = 0.08;
+        // TAX = 0.09;  // compile error!
+    }
+}`},
+
+      {id:'java2',title:'Control Flow & Methods',lang:'java',
+       theory:`<p>Java control flow follows C-style syntax. Methods must be declared inside classes with explicit return types and access modifiers.</p>
+<div class="callout callout-b"><strong>Access modifiers:</strong><br>• <code>public</code> — accessible everywhere<br>• <code>private</code> — accessible only within class<br>• <code>protected</code> — class + subclasses<br>• (none) — package-private</div>
+<div class="callout callout-g"><strong>static:</strong> Belongs to class, not instance. Can call without creating an object.</div>`,
+       code:`public class Main {
+
+    // Method — must specify return type
+    static int factorial(int n) {
+        if (n <= 1) return 1;
+        return n * factorial(n - 1);
+    }
+
+    // Method overloading
+    static int add(int a, int b) { return a + b; }
+    static double add(double a, double b) { return a + b; }
+    static String add(String a, String b) { return a + b; }
+
+    // Variable args (varargs)
+    static int sum(int... nums) {
+        int total = 0;
+        for (int n : nums) total += n;
+        return total;
+    }
+
+    public static void main(String[] args) {
+        // if / else if / else
+        int score = 85;
+        String grade;
+        if (score >= 90) grade = "A";
+        else if (score >= 80) grade = "B";
+        else if (score >= 70) grade = "C";
+        else grade = "F";
+        System.out.println("Grade: " + grade);
+
+        // Ternary operator
+        String result = (score >= 60) ? "Pass" : "Fail";
+
+        // switch (Java 14+ — enhanced)
+        String day = "MONDAY";
+        String type = switch (day) {
+            case "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY" -> "Weekday";
+            case "SATURDAY","SUNDAY" -> "Weekend";
+            default -> "Unknown";
+        };
+        System.out.println(type);
+
+        // for loop
+        for (int i = 1; i <= 5; i++) System.out.print(i + " ");
+        System.out.println();
+
+        // enhanced for (for-each)
+        int[] nums = {1,2,3,4,5};
+        for (int n : nums) System.out.print(n + " ");
+        System.out.println();
+
+        // while loop
+        int n = 1;
+        while (n <= 32) { System.out.print(n + " "); n *= 2; }
+        System.out.println();
+
+        System.out.println(factorial(6));      // 720
+        System.out.println(add(3, 4));         // 7
+        System.out.println(add(1.5, 2.5));     // 4.0
+        System.out.println(add("Hi ","Java!")); // Hi Java!
+        System.out.println(sum(1,2,3,4,5));    // 15
+    }
+}`},
+
+      {id:'java3',title:'Arrays & Collections',lang:'java',
+       theory:`<p>Java has both arrays (fixed size) and the Collections framework (dynamic). Always prefer collections in modern Java.</p>
+<div class="callout callout-b"><strong>Key collections:</strong><br>• <code>ArrayList&lt;T&gt;</code> — dynamic array<br>• <code>HashMap&lt;K,V&gt;</code> — key-value pairs (hash table)<br>• <code>HashSet&lt;T&gt;</code> — unique elements<br>• <code>LinkedList&lt;T&gt;</code> — doubly linked list</div>`,
+       code:`import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+        // ── ARRAYS (fixed size) ──
+        int[] arr = {5, 3, 1, 4, 2};
+        Arrays.sort(arr);
+        System.out.println(Arrays.toString(arr));  // [1,2,3,4,5]
+
+        String[] names = new String[3];
+        names[0] = "Alice"; names[1] = "Bob"; names[2] = "Carol";
+
+        // ── ARRAYLIST (dynamic) ──
+        List<String> fruits = new ArrayList<>(
+            Arrays.asList("apple","banana","cherry")
+        );
+        fruits.add("mango");
+        fruits.remove("banana");
+        fruits.add(0, "kiwi");
+
+        System.out.println(fruits);
+        System.out.println("Size: " + fruits.size());
+        System.out.println("Contains apple: " + fruits.contains("apple"));
+
+        // Iterate
+        for (String f : fruits) System.out.print(f + " ");
+        System.out.println();
+
+        // ── HASHMAP ──
+        Map<String, Integer> scores = new HashMap<>();
+        scores.put("Alice", 95);
+        scores.put("Bob", 87);
+        scores.put("Carol", 92);
+        scores.put("Alice", 98);  // updates existing
+
+        System.out.println("Alice: " + scores.get("Alice")); // 98
+        System.out.println("Dave: " + scores.getOrDefault("Dave", 0)); // 0
+
+        for (Map.Entry<String,Integer> e : scores.entrySet())
+            System.out.println(e.getKey() + " → " + e.getValue());
+
+        // ── HASHSET ──
+        Set<Integer> uniq = new HashSet<>(Arrays.asList(1,2,3,3,4,4,5));
+        System.out.println(uniq);  // [1,2,3,4,5]
+
+        // ── STREAMS (Java 8+) ──
+        List<Integer> nums = List.of(1,2,3,4,5,6,7,8,9,10);
+
+        int evenSum = nums.stream()
+            .filter(n -> n % 2 == 0)
+            .mapToInt(Integer::intValue)
+            .sum();
+        System.out.println("Even sum: " + evenSum); // 30
+
+        List<String> upper = fruits.stream()
+            .map(String::toUpperCase)
+            .sorted()
+            .collect(Collectors.toList());
+        System.out.println(upper);
+    }
+}`},
+    ]},
+
+    {title:'🟡 Intermediate',lessons:[
+      {id:'java4',title:'OOP — Classes & Inheritance',lang:'java',
+       theory:`<p>Java is a pure object-oriented language. Everything (except primitives) is an object. Java supports single class inheritance and multiple interface implementation.</p>
+<div class="callout callout-b"><strong>extends:</strong> Inherit from one class.<br><strong>implements:</strong> Implement multiple interfaces.<br><strong>abstract:</strong> Can't instantiate — must be subclassed.<br><strong>interface:</strong> Contract — defines what, not how.</div>`,
+       code:`// Abstract base class
+abstract class Shape {
+    protected String color;
+
+    public Shape(String color) { this.color = color; }
+
+    // Abstract method — must be implemented by subclasses
+    public abstract double area();
+    public abstract String describe();
+
+    // Concrete method — shared by all subclasses
+    public String getInfo() {
+        return String.format("%s [color=%s, area=%.2f]",
+            describe(), color, area());
+    }
+}
+
+// Interface
+interface Drawable {
+    void draw();  // implicitly public abstract
+    default String getDrawMode() { return "2D"; }  // default method
+}
+
+// Inheritance + interface
+class Circle extends Shape implements Drawable {
+    private double radius;
+
+    public Circle(double radius, String color) {
+        super(color);  // call parent constructor!
+        this.radius = radius;
+    }
+
+    @Override
+    public double area() { return Math.PI * radius * radius; }
+
+    @Override
+    public String describe() {
+        return String.format("Circle(r=%.1f)", radius);
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing circle with radius " + radius);
+    }
+}
+
+class Rectangle extends Shape implements Drawable {
+    private double width, height;
+
+    public Rectangle(double w, double h, String color) {
+        super(color);
+        this.width = w; this.height = h;
+    }
+
+    @Override public double area() { return width * height; }
+    @Override public String describe() {
+        return String.format("Rect(%.1fx%.1f)", width, height);
+    }
+    @Override public void draw() {
+        System.out.println("Drawing " + width + "x" + height + " rectangle");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Polymorphism
+        Shape[] shapes = {
+            new Circle(5, "red"),
+            new Rectangle(4, 6, "blue"),
+            new Circle(3, "green")
+        };
+
+        for (Shape s : shapes) {
+            System.out.println(s.getInfo());
+            if (s instanceof Drawable d) {  // pattern matching (Java 16+)
+                d.draw();
+            }
+        }
+    }
+}`},
+
+      {id:'java5',title:'Generics & Exception Handling',lang:'java',
+       theory:`<p>Generics enable type-safe, reusable code. Exception handling ensures programs fail gracefully and communicate errors clearly.</p>
+<div class="callout callout-b"><strong>Checked exceptions:</strong> Must be declared or caught (IOException, SQLException).<br><strong>Unchecked:</strong> Runtime exceptions — NullPointerException, ArrayIndexOutOfBoundsException.<br><strong>try-with-resources:</strong> Auto-closes resources (files, DB connections).</div>`,
+       code:`import java.util.*;
+import java.util.function.*;
+
+// Generic class
+class Pair<A, B> {
+    private final A first;
+    private final B second;
+
+    public Pair(A first, B second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    public A getFirst() { return first; }
+    public B getSecond() { return second; }
+
+    @Override
+    public String toString() {
+        return "(" + first + ", " + second + ")";
+    }
+}
+
+// Generic method with bounded type
+class MathUtils {
+    public static <T extends Number> double sum(List<T> list) {
+        return list.stream().mapToDouble(Number::doubleValue).sum();
+    }
+
+    public static <T extends Comparable<T>> T max(T a, T b) {
+        return a.compareTo(b) >= 0 ? a : b;
+    }
+}
+
+// Custom exception
+class ValidationException extends RuntimeException {
+    private final String field;
+    public ValidationException(String field, String msg) {
+        super(field + ": " + msg);
+        this.field = field;
+    }
+    public String getField() { return field; }
+}
+
+public class Main {
+    static int divide(int a, int b) {
+        if (b == 0) throw new ArithmeticException("Division by zero");
+        return a / b;
+    }
+
+    static void validateAge(int age) {
+        if (age < 0 || age > 150)
+            throw new ValidationException("age", "must be 0-150");
+    }
+
+    public static void main(String[] args) {
+        // ── GENERICS ──
+        Pair<String, Integer> p = new Pair<>("Alice", 25);
+        System.out.println(p);  // (Alice, 25)
+        System.out.println(p.getFirst() + " is " + p.getSecond());
+
+        List<Integer> nums = Arrays.asList(1,2,3,4,5);
+        System.out.println("Sum: " + MathUtils.sum(nums));  // 15.0
+        System.out.println("Max: " + MathUtils.max("apple","mango")); // mango
+
+        // ── EXCEPTION HANDLING ──
+        try {
+            System.out.println(divide(10, 2));  // 5
+            System.out.println(divide(10, 0));  // throws!
+        } catch (ArithmeticException e) {
+            System.out.println("Caught: " + e.getMessage());
+        } finally {
+            System.out.println("Always runs");
+        }
+
+        try { validateAge(-5); }
+        catch (ValidationException e) {
+            System.out.println("Validation failed [" + e.getField() + "]: " + e.getMessage());
+        }
+
+        // Multiple catch
+        try {
+            String s = null;
+            s.length();  // NullPointerException!
+        } catch (NullPointerException | IllegalArgumentException e) {
+            System.out.println("Caught: " + e.getClass().getSimpleName());
+        }
+    }
+}`},
+    ]},
+
+    {title:'🔴 Advanced',lessons:[
+      {id:'java6',title:'Streams, Lambda & Functional',lang:'java',
+       theory:`<p>Java 8+ introduced functional programming features: lambda expressions, method references, the Streams API, and functional interfaces.</p>
+<div class="callout callout-b"><strong>Lambda:</strong> <code>(params) -> expression</code><br><strong>Stream:</strong> Declarative pipeline for processing collections.<br><strong>Optional:</strong> Null-safe container — avoid NullPointerException.</div>`,
+       code:`import java.util.*;
+import java.util.stream.*;
+import java.util.function.*;
+
+public class Main {
+
+    record Student(String name, int age, double gpa, String major) {}
+
+    public static void main(String[] args) {
+        List<Student> students = List.of(
+            new Student("Alice",   20, 3.9, "CS"),
+            new Student("Bob",     22, 3.5, "Math"),
+            new Student("Carol",   21, 3.8, "CS"),
+            new Student("Dave",    23, 3.2, "Physics"),
+            new Student("Eve",     20, 3.95,"CS"),
+            new Student("Frank",   22, 2.8, "Math")
+        );
+
+        // Filter CS students with GPA > 3.5, sorted by GPA desc
+        List<String> topCS = students.stream()
+            .filter(s -> s.major().equals("CS"))
+            .filter(s -> s.gpa() > 3.5)
+            .sorted(Comparator.comparingDouble(Student::gpa).reversed())
+            .map(s -> String.format("%s (%.2f)", s.name(), s.gpa()))
+            .collect(Collectors.toList());
+        System.out.println("Top CS students: " + topCS);
+
+        // Average GPA by major
+        Map<String, Double> avgByMajor = students.stream()
+            .collect(Collectors.groupingBy(
+                Student::major,
+                Collectors.averagingDouble(Student::gpa)
+            ));
+        avgByMajor.forEach((major, avg) ->
+            System.out.printf("%s: avg GPA = %.2f%n", major, avg));
+
+        // Count by major
+        Map<String,Long> countByMajor = students.stream()
+            .collect(Collectors.groupingBy(Student::major, Collectors.counting()));
+        System.out.println(countByMajor);
+
+        // ── LAMBDA & FUNCTIONAL INTERFACES ──
+        Function<Integer,Integer> triple = x -> x * 3;
+        Function<Integer,Integer> addTen = x -> x + 10;
+        Function<Integer,Integer> combined = triple.andThen(addTen);
+        System.out.println(combined.apply(5));   // 25
+
+        Predicate<Student> isHonors = s -> s.gpa() >= 3.8;
+        Predicate<Student> isCS = s -> s.major().equals("CS");
+        students.stream()
+            .filter(isHonors.and(isCS))
+            .forEach(s -> System.out.println("Honors CS: " + s.name()));
+
+        // ── OPTIONAL ──
+        Optional<Student> best = students.stream()
+            .max(Comparator.comparingDouble(Student::gpa));
+        best.ifPresent(s -> System.out.println("Best: " + s.name()));
+
+        String topName = best
+            .map(Student::name)
+            .orElse("Nobody");
+        System.out.println("Top: " + topName);
+    }
+}`},
+    ]},
+  ]
+},
+};
+
+/* ══════════════════════════════
+   BUILD SIDEBAR LANGS
+══════════════════════════════ */
+function buildSidebarLangs(){
+  const el=document.getElementById('sbLangs');
+  el.innerHTML='';
+  Object.entries(COURSES).forEach(([id,c])=>{
+    const progress=getCourseProgress(id);
+    const div=document.createElement('div');
+    div.className='sb-item';
+    div.innerHTML=`<span class="si">${c.icon}</span>${c.name}`;
+    div.onclick=()=>openCourse(id);
+    el.appendChild(div);
+    const pw=document.createElement('div');
+    pw.className='sb-prog-wrap';
+    pw.innerHTML=`<div class="sb-prog"><div class="sb-prog-fill" style="width:${progress}%"></div></div>`;
+    el.appendChild(pw);
+  });
+}
+
+/* ══════════════════════════════
+   COURSE PROGRESS
+══════════════════════════════ */
+function getCourseProgress(id){
+  const c=COURSES[id];
+  const total=c.sections.reduce((s,sec)=>s+sec.lessons.length,0);
+  const done=c.sections.reduce((s,sec)=>s+sec.lessons.filter(l=>doneLessons.has(l.id)).length,0);
+  return total?Math.round(done/total*100):0;
+}
+function getAllLessons(id){
+  return COURSES[id].sections.flatMap(s=>s.lessons);
+}
+
+/* ══════════════════════════════
+   HOME GRID
+══════════════════════════════ */
+function buildHomeGrid(){
+  const el=document.getElementById('homeGrid');
+  el.innerHTML='';
+  Object.entries(COURSES).forEach(([id,c])=>{
+    const p=getCourseProgress(id);
+    const total=getAllLessons(id).length;
+    el.appendChild(makeCourseCard(id,c,p,total));
+  });
+  document.getElementById('statDone').textContent=doneLessons.size;
+  const avg=quizScores.length?Math.round(quizScores.reduce((a,b)=>a+b,0)/quizScores.length)+'%':'–';
+  document.getElementById('statAvg').textContent=avg;
+  buildSidebarLangs();
+}
+
+/* ══════════════════════════════
+   COURSES GRID
+══════════════════════════════ */
+let activeLevelFilter='all';
+function buildCoursesGrid(){
+  const el=document.getElementById('coursesGrid');
+  const q=document.getElementById('courseSearch').value.toLowerCase();
+  el.innerHTML='';
+  Object.entries(COURSES).forEach(([id,c])=>{
+    if(q&&!c.name.toLowerCase().includes(q)&&!c.desc.toLowerCase().includes(q))return;
+    if(activeLevelFilter!=='all'){
+      const lv=c.level.toLowerCase();
+      if(!lv.includes(activeLevelFilter))return;
+    }
+    const p=getCourseProgress(id);
+    const total=getAllLessons(id).length;
+    el.appendChild(makeCourseCard(id,c,p,total));
+  });
+}
+function filterCourses(){buildCoursesGrid();}
+function filterLevel(level,el){
+  activeLevelFilter=level;
+  document.querySelectorAll('#view-courses .filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  buildCoursesGrid();
+}
+
+function makeCourseCard(id,c,progress,total){
+  const div=document.createElement('div');
+  div.className='cc';
+  div.style.setProperty('--cc-color',c.color);
+  const done=Math.round(progress/100*total);
+  div.innerHTML=`
+    <div class="cc-stripe" style="background:${c.stripe}"></div>
+    <div class="cc-icon">${c.icon}</div>
+    <div class="cc-name">${c.name}</div>
+    <div class="cc-desc">${c.desc}</div>
+    <div class="cc-meta">
+      <span class="badge badge-c">${c.level}</span>
+      <span>${total} lessons</span>
+    </div>
+    ${progress>0?`<div class="prog-bar"><div class="prog-fill" style="width:${progress}%"></div></div>
+    <div class="prog-txt">${done}/${total} complete</div>`:''}`;
+  div.onclick=()=>openCourse(id);
+  return div;
+}
+
+/* ══════════════════════════════
+   OPEN COURSE / LESSON
+══════════════════════════════ */
+function openCourse(id){
+  currentCourse=id;
+  const c=COURSES[id];
+  const firstLesson=c.sections[0].lessons[0];
+  openLesson(id,firstLesson.id);
+}
+
+function openLesson(courseId,lessonId){
+  currentCourse=courseId;
+  currentLesson=lessonId;
+  const c=COURSES[courseId];
+  const allLessons=getAllLessons(courseId);
+  const lesson=allLessons.find(l=>l.id===lessonId);
+
+  // Build sidebar
+  const sb=document.getElementById('lsSidebar');
+  sb.innerHTML=`<div class="ls-hdr"><h3>${c.icon} ${c.name}</h3><p>${c.level}</p></div>`;
+  c.sections.forEach(sec=>{
+    const stitle=document.createElement('div');
+    stitle.className='ls-sec-title';
+    stitle.textContent=sec.title;
+    sb.appendChild(stitle);
+    sec.lessons.forEach(l=>{
+      const done=doneLessons.has(l.id);
+      const active=l.id===lessonId;
+      const item=document.createElement('div');
+      item.className='ls-item'+(active?' active':'')+(done?' done':'');
+      item.innerHTML=`<div class="ls-dot">${done?'✓':''}</div>${l.title}`;
+      item.onclick=()=>openLesson(courseId,l.id);
+      sb.appendChild(item);
+    });
+  });
+
+  // Build body
+  const body=document.getElementById('lsBody');
+  const curIdx=allLessons.findIndex(l=>l.id===lessonId);
+  const prev=allLessons[curIdx-1];
+  const next=allLessons[curIdx+1];
+
+  body.innerHTML=`
+    <div class="lesson-title">${lesson.title}</div>
+    <div class="lesson-meta">
+      <span class="badge badge-c">${c.name}</span>
+      <span class="badge badge-p">${lesson.lang}</span>
+      ${doneLessons.has(lessonId)?'<span class="badge badge-g">✓ Completed</span>':''}
+    </div>
+    <div class="theory-card">
+      <h4>📖 Theory</h4>
+      ${lesson.theory}
+    </div>
+    <div class="code-block">
+      <div class="cb-hdr">
+        <div class="cb-lang">
+          <div class="cb-dot" style="background:#ff5f57"></div>
+          <div class="cb-dot" style="background:#febc2e"></div>
+          <div class="cb-dot" style="background:#28c840"></div>
+          ${lesson.lang}
+        </div>
+        <div class="cb-actions">
+          <button class="cb-btn" onclick="copyLesson()">Copy</button>
+          ${lesson.lang==='python'||lesson.lang==='javascript'?`<button class="cb-btn" onclick="runLesson()">▶ Run</button>`:''}
+          <button class="cb-btn" onclick="openInEditor()">Open in Editor</button>
+        </div>
+      </div>
+      <div class="cb-body" id="lessonCode">${escapeHtml(lesson.code)}</div>
+    </div>
+    <div class="lesson-nav">
+      ${prev?`<button class="btn btn-secondary" onclick="openLesson('${courseId}','${prev.id}')">← ${prev.title}</button>`:'<span></span>'}
+      <button class="btn btn-green" onclick="markDone('${lessonId}')">
+        ${doneLessons.has(lessonId)?'✓ Completed':'Mark Complete ✓'}
+      </button>
+      ${next?`<button class="btn btn-primary" onclick="openLesson('${courseId}','${next.id}')">→ ${next.title}</button>`:'<button class="btn btn-purple" onclick="startCourseQuiz()">📝 Quiz</button>'}
+    </div>`;
+
+  showView('lesson');
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function markDone(id){
+  doneLessons.add(id);
+  S.set('done',[...doneLessons]);
+  showToast('✓ Lesson completed!','ok');
+  openLesson(currentCourse,id);
+  buildSidebarLangs();
+}
+
+function copyLesson(){
+  const code=COURSES[currentCourse]&&getAllLessons(currentCourse).find(l=>l.id===currentLesson);
+  if(code)navigator.clipboard.writeText(code.code).then(()=>showToast('Code copied!','ok'));
+}
+
+function runLesson(){
+  const lesson=getAllLessons(currentCourse).find(l=>l.id===currentLesson);
+  if(!lesson)return;
+  document.getElementById('editorLang').value=lesson.lang;
+  document.getElementById('codeInput').value=lesson.code;
+  showView('practice');
+  setTimeout(runCode,100);
+}
+
+function openInEditor(){
+  const lesson=getAllLessons(currentCourse).find(l=>l.id===currentLesson);
+  if(!lesson)return;
+  document.getElementById('editorLang').value=lesson.lang;
+  document.getElementById('codeInput').value=lesson.code;
+  showView('practice');
+  refreshChallenges();
+}
+
+/* ══════════════════════════════
+   PRACTICE EDITOR
+══════════════════════════════ */
+const CHALLENGES={
+  python:[
+    {title:'FizzBuzz',desc:'Print 1-50; multiples of 3 → "Fizz", 5 → "Buzz", both → "FizzBuzz"',diff:'e',
+     code:`for i in range(1, 51):\n    if i % 15 == 0:\n        print("FizzBuzz")\n    elif i % 3 == 0:\n        print("Fizz")\n    elif i % 5 == 0:\n        print("Buzz")\n    else:\n        print(i)`},
+    {title:'Palindrome Check',desc:'Check if a string reads the same forwards and backwards',diff:'e',
+     code:`def is_palindrome(s):\n    s = s.lower().replace(" ","")\n    return s == s[::-1]\n\nwords = ["racecar","hello","level","world","madam"]\nfor w in words:\n    print(f"{w}: {is_palindrome(w)}")`},
+    {title:'Fibonacci Generator',desc:'Generate first N fibonacci numbers',diff:'m',
+     code:`def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a+b\n\nprint(list(fibonacci(15)))`},
+    {title:'Frequency Counter',desc:'Count character frequency in a string',diff:'m',
+     code:`from collections import Counter\n\ntext = "hello world programming"\ncounts = Counter(text.replace(" ",""))\n\nfor char, count in sorted(counts.items()):\n    print(f"'{char}': {'█'*count} ({count})")`},
+    {title:'Binary Search',desc:'Implement binary search algorithm',diff:'h',
+     code:`def binary_search(arr, target):\n    left, right = 0, len(arr)-1\n    while left <= right:\n        mid = (left+right)//2\n        if arr[mid] == target: return mid\n        elif arr[mid] < target: left = mid+1\n        else: right = mid-1\n    return -1\n\narr = list(range(0,100,2))  # even numbers 0-98\nprint(binary_search(arr, 42))  # index\nprint(binary_search(arr, 7))   # -1 (not found)`},
+  ],
+  javascript:[
+    {title:'Array Flattener',desc:'Flatten a nested array to any depth',diff:'e',
+     code:`const nested = [1,[2,[3,[4,[5]]]]];
+console.log(nested.flat(Infinity));   // [1,2,3,4,5]
+console.log(nested.flat(1));          // [1,2,[3,[4,[5]]]]
+console.log(nested.flat(2));          // [1,2,3,[4,[5]]]`},
+    {title:'Debounce',desc:'Implement a debounce function',diff:'m',
+     code:`function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+const search = debounce(q => console.log("Searching:", q), 300);
+search("h"); search("he"); search("hel"); search("hell");
+setTimeout(() => search("hello"), 400);`},
+    {title:'Deep Clone',desc:'Deep clone a nested object',diff:'m',
+     code:`function deepClone(obj) {
+  if (obj === null || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(deepClone);
+  return Object.fromEntries(
+    Object.entries(obj).map(([k,v]) => [k, deepClone(v)])
+  );
+}
+
+const original = {a:1, b:{c:2, d:[3,4,{e:5}]}};
+const clone = deepClone(original);
+clone.b.c = 999;
+console.log(original.b.c); // 2 — unchanged!
+console.log(clone.b.c);    // 999`},
+    {title:'Async Retry',desc:'Retry a failing async function with backoff',diff:'h',
+     code:`async function retry(fn, attempts=3, delay=100) {
+  for (let i=0; i<attempts; i++) {
+    try {
+      return await fn();
+    } catch(err) {
+      if (i===attempts-1) throw err;
+      console.log(\`Attempt \${i+1} failed, retrying...\`);
+      await new Promise(r => setTimeout(r, delay * 2**i));
+    }
+  }
+}
+
+let calls = 0;
+const flaky = () => new Promise((res,rej) => {
+  calls++;
+  calls < 3 ? rej(new Error("Flaky!")) : res("Success!");
+});
+
+retry(flaky).then(console.log).catch(console.error);`},
+  ],
+  cpp:[
+    {title:'Hello C++',desc:'Basic Hello World with variables',diff:'e',
+     code:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name = "C++";
+    int year = 1985;
+    cout << "Hello from " << name << " (born " << year << ")!" << endl;
+    
+    // Basic arithmetic
+    for(int i=1; i<=5; i++) {
+        cout << i << "^2 = " << i*i << endl;
+    }
+    return 0;
+}`},
+    {title:'Linked List',desc:'Implement a singly linked list',diff:'h',
+     code:`#include <iostream>
+using namespace std;
+
+struct Node { int val; Node* next; };
+
+class LinkedList {
+    Node* head = nullptr;
+public:
+    void push(int val) {
+        Node* n = new Node{val, head};
+        head = n;
+    }
+    void print() {
+        for(Node* cur=head; cur; cur=cur->next)
+            cout << cur->val << (cur->next?" -> ":"\\n");
+    }
+    ~LinkedList() {
+        while(head) { Node* t=head; head=head->next; delete t; }
+    }
+};
+
+int main() {
+    LinkedList list;
+    for(int i=1; i<=5; i++) list.push(i);
+    list.print();  // 5 -> 4 -> 3 -> 2 -> 1
+    return 0;
+}`},
+  ],
+  java:[
+    {title:'Hello Java',desc:'Basic Hello World',diff:'e',
+     code:`public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, Java!");
+        
+        // Basic loops
+        for (int i = 1; i <= 5; i++) {
+            System.out.printf("%d squared = %d%n", i, i*i);
+        }
+        
+        // String operations
+        String msg = "Java Programming";
+        System.out.println(msg.toLowerCase());
+        System.out.println(msg.length() + " characters");
+    }
+}`},
+    {title:'Bubble Sort',desc:'Implement bubble sort algorithm',diff:'m',
+     code:`import java.util.Arrays;
+
+public class Main {
+    static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i=0; i<n-1; i++) {
+            for (int j=0; j<n-i-1; j++) {
+                if (arr[j] > arr[j+1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        int[] arr = {64,34,25,12,22,11,90};
+        System.out.println("Before: " + Arrays.toString(arr));
+        bubbleSort(arr);
+        System.out.println("After: " + Arrays.toString(arr));
+    }
+}`},
+  ],
+};
+
+function refreshChallenges(){
+  const lang=document.getElementById('editorLang').value;
+  const chals=CHALLENGES[lang]||[];
+  const el=document.getElementById('chalList');
+  const count=document.getElementById('chalCount');
+  count.textContent=chals.length+' challenges';
+  el.innerHTML='';
+  chals.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='chal-item';
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:3px;">
+      <h4>${c.title}</h4><span class="diff diff-${c.diff}">${c.diff==='e'?'Easy':c.diff==='m'?'Medium':'Hard'}</span></div>
+      <p>${c.desc}</p>`;
+    div.onclick=()=>{document.getElementById('codeInput').value=c.code;};
+    el.appendChild(div);
+  });
+}
+
+function runCode(){
+  const lang=document.getElementById('editorLang').value;
+  const code=document.getElementById('codeInput').value;
+  const out=document.getElementById('output');
+  out.innerHTML='';
+
+  if(lang==='python'){
+    runPython(code,out);
+  } else if(lang==='javascript'){
+    runJS(code,out);
+  } else {
+    out.innerHTML=`<span class="out-info">// ${lang.toUpperCase()} can't run in browser.\n// Copy the code and run locally:\n// C++: g++ file.cpp -o app && ./app\n// Java: javac Main.java && java Main</span>`;
+  }
+}
+
+function runPython(code,out){
+  let log=[];
+  const fakeBuiltins={
+    print:(...args)=>{log.push(args.map(a=>typeof a==='object'?JSON.stringify(a):String(a)).join(' '));},
+    len:a=>a.length,
+    range:function*(s,e,step=1){if(e===undefined){e=s;s=0;}if(step>0)for(let i=s;i<e;i+=step)yield i;else for(let i=s;i>e;i+=step)yield i;},
+    int:x=>parseInt(x),float:x=>parseFloat(x),str:x=>String(x),
+    bool:x=>!!x,abs:Math.abs,max:Math.max,min:Math.min,
+    isinstance:(o,t)=>true,type:x=>typeof x,
+    list:x=>Array.from(x||[]),set:x=>new Set(x||[]),
+    sum:x=>[...x].reduce((a,b)=>a+b,0),
+    sorted:(x,opts={})=>{const a=[...x];a.sort((u,v)=>opts.reverse?v-u:u-v);return a;},
+    zip:(...arrs)=>arrs[0].map((_,i)=>arrs.map(a=>a[i])),
+    enumerate:(it,start=0)=>[...it].map((v,i)=>[i+start,v]),
+    map:(fn,it)=>[...it].map(fn),
+    filter:(fn,it)=>[...it].filter(fn),
+  };
+  // Transpile Python → JS (basic)
+  let js=code
+    .replace(/True/g,'true').replace(/False/g,'false').replace(/None/g,'null')
+    .replace(/elif /g,'else if(').replace(/if (\S.*?):/g,'if($1){')
+    .replace(/else:/g,'else{')
+    .replace(/for (\w+) in range\((.*?)\):/g,'for(let $1 of range($2)){')
+    .replace(/for (\w+) in (\w+):/g,'for(let $1 of $2){')
+    .replace(/while (.*?):/g,'while($1){')
+    .replace(/def (\w+)\((.*?)\):/g,'function $1($2){')
+    .replace(/class (\w+):/g,'class $1{')
+    .replace(/f"(.*?)"/g,(m,s)=>'`'+s.replace(/\{/g,'${')+'`')
+    .replace(/#.*$/gm,'')
+    .replace(/print\((.*?)\)/g,'print($1)')
+    .replace(/not /g,'!')
+    .replace(/ and /g,' && ').replace(/ or /g,' || ');
+  // Add closing braces (heuristic for demo)
+  try{
+    const fn=new Function(...Object.keys(fakeBuiltins),'let __log=[];'+
+      Object.entries(fakeBuiltins).map(([k,v])=>`const ${k}=${typeof v==='function'?v:'('+v+')'}`).join(';\n')+
+      ';\n'+js+'\nreturn __log;');
+    fn(...Object.values(fakeBuiltins));
+  }catch(e){}
+  // Simpler approach: just eval with replacements
+  try{
+    const output=[];
+    const env={...fakeBuiltins,print:(...a)=>output.push(a.join(' '))};
+    // minimal eval attempt
+    new Function(...Object.keys(env),js)(...Object.values(env));
+    if(output.length)out.innerHTML=output.map(l=>`<div class="out-ok">${escapeHtml(l)}</div>`).join('');
+    else out.innerHTML='<span class="out-info">// Code ran (no output)</span>';
+  }catch(e){
+    out.innerHTML=`<span class="out-err">// Python execution (browser simulation):\n// For full Python support, use Python locally.\n// Error: ${e.message}</span>`;
+  }
+}
+
+function runJS(code,out){
+  const output=[];
+  const origLog=console.log;
+  console.log=(...args)=>output.push(args.map(a=>typeof a==='object'?JSON.stringify(a,null,2):String(a)).join(' '));
+  try{
+    new Function(code)();
+    out.innerHTML=output.length
+      ?output.map(l=>`<div class="out-ok">${escapeHtml(l)}</div>`).join('')
+      :'<span class="out-info">// Ran successfully (no output)</span>';
+  }catch(e){
+    out.innerHTML=`<span class="out-err">❌ ${e.constructor.name}: ${e.message}</span>`;
+  }finally{
+    console.log=origLog;
+  }
+}
+
+function clearEditor(){document.getElementById('codeInput').value='';document.getElementById('output').innerHTML='';}
+function copyEditor(){
+  navigator.clipboard.writeText(document.getElementById('codeInput').value)
+    .then(()=>showToast('Code copied!','ok'));
+}
+
+/* ══════════════════════════════
+   CHEATSHEETS
+══════════════════════════════ */
+const CHEATSHEETS={
+  python:{
+    'Basics':[
+      {k:'print(x)',v:'Output to console'},
+      {k:'input("msg")',v:'Read from user'},
+      {k:'type(x)',v:'Get type of variable'},
+      {k:'len(x)',v:'Length of str/list/dict'},
+      {k:'range(n)',v:'Numbers 0 to n-1'},
+    ],
+    'String Methods':[
+      {k:'.upper()/.lower()',v:'Case conversion'},
+      {k:'.strip()',v:'Remove whitespace'},
+      {k:'.split(sep)',v:'Split to list'},
+      {k:'.replace(a,b)',v:'Replace substring'},
+      {k:'.find(sub)',v:'Index of substring'},
+      {k:'f"text {var}"',v:'f-string formatting'},
+    ],
+    'List Operations':[
+      {k:'.append(x)',v:'Add to end'},
+      {k:'.insert(i,x)',v:'Insert at index'},
+      {k:'.remove(x)',v:'Remove first occurrence'},
+      {k:'.pop()',v:'Remove & return last'},
+      {k:'.sort()',v:'Sort in place'},
+      {k:'list[a:b]',v:'Slice from a to b-1'},
+    ],
+    'Dict Operations':[
+      {k:'d[key]',v:'Access by key'},
+      {k:'.get(k,default)',v:'Safe access'},
+      {k:'.keys()/.values()',v:'Keys or values'},
+      {k:'.items()',v:'(key,value) pairs'},
+      {k:'del d[key]',v:'Remove key'},
+    ],
+    'Control Flow':[
+      {k:'if/elif/else',v:'Conditional'},
+      {k:'for x in iterable',v:'For loop'},
+      {k:'while condition',v:'While loop'},
+      {k:'break/continue',v:'Exit/skip loop'},
+      {k:'try/except/finally',v:'Error handling'},
+    ],
+    'Functions & OOP':[
+      {k:'def fn(args):',v:'Define function'},
+      {k:'lambda x: expr',v:'Anonymous function'},
+      {k:'class Name:',v:'Define class'},
+      {k:'__init__(self)',v:'Constructor'},
+      {k:'@decorator',v:'Apply decorator'},
+    ],
+  },
+  javascript:{
+    'Variables':[
+      {k:'const x = val',v:'Immutable binding'},
+      {k:'let x = val',v:'Mutable binding'},
+      {k:'typeof x',v:'Get type string'},
+      {k:'x ?? default',v:'Nullish coalescing'},
+      {k:'x?.prop',v:'Optional chaining'},
+    ],
+    'Array Methods':[
+      {k:'.map(fn)',v:'Transform each element'},
+      {k:'.filter(fn)',v:'Keep matching elements'},
+      {k:'.reduce(fn,init)',v:'Fold to single value'},
+      {k:'.find(fn)',v:'First matching element'},
+      {k:'.some/.every(fn)',v:'Any/all match'},
+      {k:'.flat(depth)',v:'Flatten nested arrays'},
+    ],
+    'Object & Destructuring':[
+      {k:'{a,b} = obj',v:'Object destructuring'},
+      {k:'[a,b] = arr',v:'Array destructuring'},
+      {k:'{...obj}',v:'Spread / clone'},
+      {k:'Object.keys(o)',v:'Array of keys'},
+      {k:'Object.entries(o)',v:'[key,val] pairs'},
+    ],
+    'Async':[
+      {k:'async function',v:'Returns Promise'},
+      {k:'await expr',v:'Wait for Promise'},
+      {k:'Promise.all([])',v:'Run in parallel'},
+      {k:'.then/.catch',v:'Promise chaining'},
+      {k:'try/catch',v:'Async error handling'},
+    ],
+    'Functions':[
+      {k:'(x) => x*2',v:'Arrow function'},
+      {k:'fn(...args)',v:'Rest parameters'},
+      {k:'fn(a=1)',v:'Default parameter'},
+      {k:'fn.bind(this)',v:'Bind context'},
+      {k:'fn()',v:'IIFE — immediately invoke'},
+    ],
+    'DOM & Events':[
+      {k:'document.querySelector',v:'Select element'},
+      {k:'.addEventListener',v:'Attach event handler'},
+      {k:'.innerHTML/.textContent',v:'Set element content'},
+      {k:'.classList.add/remove',v:'Toggle CSS classes'},
+      {k:'fetch(url)',v:'HTTP request (returns Promise)'},
+    ],
+  },
+  cpp:{
+    'Basics':[
+      {k:'#include <iostream>',v:'Include I/O library'},
+      {k:'using namespace std;',v:'Avoid std:: prefix'},
+      {k:'cout << x << endl;',v:'Print to console'},
+      {k:'cin >> x;',v:'Read from stdin'},
+      {k:'int main() {}',v:'Program entry point'},
+    ],
+    'Data Types':[
+      {k:'int, long, short',v:'Integer types'},
+      {k:'float, double',v:'Floating point'},
+      {k:'char',v:'Single character'},
+      {k:'bool',v:'true / false'},
+      {k:'string (std::string)',v:'Text (include <string>)'},
+      {k:'auto',v:'Compiler infers type (C++11)'},
+    ],
+    'Pointers & Refs':[
+      {k:'int* ptr = &x;',v:'Pointer to x'},
+      {k:'*ptr',v:'Dereference pointer'},
+      {k:'int& ref = x;',v:'Reference (alias)'},
+      {k:'new / delete',v:'Heap allocation (avoid)'},
+      {k:'nullptr',v:'Null pointer constant'},
+    ],
+    'STL Containers':[
+      {k:'vector<T>',v:'Dynamic array'},
+      {k:'map<K,V>',v:'Sorted key-value pairs'},
+      {k:'unordered_map<K,V>',v:'Hash map (faster)'},
+      {k:'set<T>',v:'Unique sorted values'},
+      {k:'queue/stack/deque',v:'Adapter containers'},
+    ],
+    'OOP':[
+      {k:'class Name {};',v:'Define class'},
+      {k:'public/private/protected',v:'Access modifiers'},
+      {k:'virtual fn()',v:'Enable overriding'},
+      {k:'override',v:'Mark overridden method'},
+      {k:'~Destructor()',v:'Cleanup when destroyed'},
+    ],
+    'Modern C++':[
+      {k:'auto x = expr;',v:'Type deduction'},
+      {k:'for(auto& x : v)',v:'Range-based for'},
+      {k:'make_unique<T>()',v:'Smart pointer (no delete!)'},
+      {k:'[=](x){body}',v:'Lambda expression'},
+      {k:'std::move(x)',v:'Transfer ownership'},
+    ],
+  },
+  java:{
+    'Basics':[
+      {k:'System.out.println(x)',v:'Print with newline'},
+      {k:'System.out.printf("%s",x)',v:'Formatted print'},
+      {k:'Scanner sc = new Scanner(System.in)',v:'Read input'},
+      {k:'public static void main(String[] args)',v:'Entry point'},
+      {k:'var x = val; (Java 10+)',v:'Type inference'},
+    ],
+    'String Methods':[
+      {k:'.length()',v:'String length'},
+      {k:'.charAt(i)',v:'Character at index'},
+      {k:'.substring(s,e)',v:'Substring'},
+      {k:'.toLowerCase()/.toUpperCase()',v:'Case convert'},
+      {k:'.contains(s)',v:'Check substring'},
+      {k:'String.format("%s %d",a,b)',v:'Format string'},
+    ],
+    'Collections':[
+      {k:'ArrayList<T>',v:'Dynamic list'},
+      {k:'HashMap<K,V>',v:'Key-value store'},
+      {k:'HashSet<T>',v:'Unique values (unordered)'},
+      {k:'List.of(a,b,c)',v:'Immutable list (Java 9+)'},
+      {k:'Map.of(k,v,...)',v:'Immutable map (Java 9+)'},
+    ],
+    'OOP':[
+      {k:'class Name {}',v:'Define class'},
+      {k:'public/private/protected',v:'Access modifiers'},
+      {k:'extends',v:'Single inheritance'},
+      {k:'implements',v:'Multiple interfaces'},
+      {k:'abstract class/method',v:'Must be subclassed'},
+      {k:'@Override',v:'Mark overridden method'},
+    ],
+    'Streams (Java 8+)':[
+      {k:'.stream()',v:'Get stream from collection'},
+      {k:'.filter(fn)',v:'Keep matching elements'},
+      {k:'.map(fn)',v:'Transform elements'},
+      {k:'.collect(Collectors.toList())',v:'To list'},
+      {k:'.forEach(fn)',v:'Iterate (terminal)'},
+    ],
+    'Exception Handling':[
+      {k:'try { } catch(Ex e) { }',v:'Catch exception'},
+      {k:'finally { }',v:'Always runs'},
+      {k:'throw new Exception()',v:'Throw exception'},
+      {k:'throws ExceptionType',v:'Declare thrown exceptions'},
+      {k:'try-with-resources',v:'Auto-close resources'},
+    ],
+  },
+};
+
+function showCheatsheet(lang,btn){
+  document.querySelectorAll('#cheatFilter .filter-pill').forEach(p=>p.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const el=document.getElementById('cheatContent');
+  const data=CHEATSHEETS[lang];
+  if(!data){el.innerHTML='<p style="color:var(--text2)">No cheatsheet yet.</p>';return;}
+  el.innerHTML=Object.entries(data).map(([section,rows])=>`
+    <div class="cheat-card">
+      <div class="cheat-hdr"><span>${section}</span></div>
+      <div class="cheat-body">
+        ${rows.map(r=>`<div class="cheat-row"><span class="cheat-k">${r.k}</span><span class="cheat-v">${r.v}</span></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════
+   ROADMAPS
+══════════════════════════════ */
+const ROADMAPS={
+  python:[
+    {n:1,title:'Python Fundamentals',desc:'Variables, data types, operators, control flow, functions, and basic I/O.',tags:['Syntax','Functions','Loops']},
+    {n:2,title:'Data Structures',desc:'Lists, tuples, sets, dictionaries. Comprehensions. Built-in functions (map, filter, zip).',tags:['Lists','Dicts','Sets']},
+    {n:3,title:'OOP & Modules',desc:'Classes, inheritance, encapsulation, decorators. Built-in modules (os, sys, json, datetime).',tags:['OOP','Modules','Decorators']},
+    {n:4,title:'File I/O & Error Handling',desc:'Reading/writing files, try/except/finally, custom exceptions, context managers.',tags:['Files','Exceptions','with']},
+    {n:5,title:'Libraries & Ecosystem',desc:'pip, virtual environments, NumPy, Pandas, Matplotlib, Requests.',tags:['NumPy','Pandas','pip']},
+    {n:6,title:'Web Development',desc:'Flask or FastAPI for REST APIs. Django for full-stack web apps. SQLAlchemy for databases.',tags:['Flask','FastAPI','Django']},
+    {n:7,title:'Data Science & ML',desc:'Jupyter, scikit-learn, TensorFlow/PyTorch. Statistics, ML algorithms, model evaluation.',tags:['ML','TensorFlow','Jupyter']},
+  ],
+  javascript:[
+    {n:1,title:'JS Fundamentals',desc:'Variables (let/const), data types, operators, control flow, and functions.',tags:['Variables','Functions','Arrays']},
+    {n:2,title:'DOM & Browser APIs',desc:'querySelector, events, fetch API, localStorage, timers, animations.',tags:['DOM','Events','fetch']},
+    {n:3,title:'Async JavaScript',desc:'Callbacks, Promises, async/await, error handling, AbortController.',tags:['Promises','async/await']},
+    {n:4,title:'ES6+ & Modern JS',desc:'Destructuring, spread, modules, classes, generators, WeakMap, Proxy, Reflect.',tags:['ES6+','Modules','Classes']},
+    {n:5,title:'React / Vue / Angular',desc:'Pick a framework. Learn components, state, props, routing, forms, API calls.',tags:['React','Vue','State']},
+    {n:6,title:'Node.js & Backend',desc:'Node.js runtime, Express.js, REST APIs, middleware, authentication, databases.',tags:['Node','Express','REST']},
+    {n:7,title:'TypeScript & Testing',desc:'Type annotations, interfaces, generics. Jest for unit testing. CI/CD.',tags:['TypeScript','Jest','CI']},
+  ],
+  cpp:[
+    {n:1,title:'C++ Basics',desc:'Syntax, variables, data types, operators, control flow, and functions.',tags:['Syntax','Types','Functions']},
+    {n:2,title:'Arrays, Strings & Pointers',desc:'Raw arrays, std::string, pointers, references, pass-by-value vs reference.',tags:['Pointers','References','Arrays']},
+    {n:3,title:'OOP in C++',desc:'Classes, access modifiers, constructors, destructors, inheritance, virtual functions.',tags:['Classes','Inheritance','Virtual']},
+    {n:4,title:'Templates & STL',desc:'Function/class templates, vector, map, set, algorithms, iterators.',tags:['Templates','STL','Algorithms']},
+    {n:5,title:'Memory Management',desc:'Stack vs heap, new/delete, smart pointers (unique_ptr, shared_ptr), RAII.',tags:['Memory','Smart Ptrs','RAII']},
+    {n:6,title:'Modern C++ (C++11-23)',desc:'Move semantics, lambdas, constexpr, ranges, concepts, structured bindings.',tags:['C++11','Lambdas','Concepts']},
+    {n:7,title:'Systems & Performance',desc:'Multithreading (std::thread), SIMD, profiling, embedded systems, compilers.',tags:['Threads','SIMD','Perf']},
+  ],
+  java:[
+    {n:1,title:'Java Fundamentals',desc:'Syntax, primitive types, operators, control flow, methods, and the JVM.',tags:['Syntax','JVM','Methods']},
+    {n:2,title:'Arrays & Collections',desc:'Arrays, ArrayList, HashMap, HashSet, LinkedList, Comparable, Comparator.',tags:['ArrayList','HashMap','Sort']},
+    {n:3,title:'OOP in Java',desc:'Classes, interfaces, abstract classes, inheritance, polymorphism, access modifiers.',tags:['OOP','Interfaces','Polymorphism']},
+    {n:4,title:'Generics & Exceptions',desc:'Generic classes/methods, bounded wildcards, checked vs unchecked exceptions, try-with-resources.',tags:['Generics','Exceptions','Wildcards']},
+    {n:5,title:'Functional Java (Java 8+)',desc:'Lambdas, Streams API, Optional, functional interfaces, method references.',tags:['Streams','Lambda','Optional']},
+    {n:6,title:'Concurrency',desc:'Threads, Runnable, ExecutorService, CompletableFuture, synchronized, volatile.',tags:['Threads','CompletableFuture','Sync']},
+    {n:7,title:'Spring Boot & Microservices',desc:'Spring MVC, REST controllers, JPA/Hibernate, Spring Security, Docker, microservices.',tags:['Spring','REST','Docker']},
+  ],
+};
+
+function showRoadmap(lang,btn){
+  document.querySelectorAll('#view-roadmap .filter-pill').forEach(p=>p.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const steps=ROADMAPS[lang]||[];
+  document.getElementById('roadmapContent').innerHTML=steps.map(s=>`
+    <div class="rm-step">
+      <div class="rm-num">${s.n}</div>
+      <div class="rm-content">
+        <h4>${s.title}</h4>
+        <p>${s.desc}</p>
+        <div class="rm-tags">${s.tags.map(t=>`<span class="badge badge-c">${t}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════
+   QUIZ
+══════════════════════════════ */
+const QUIZBANK={
+  python:[
+    {q:'What does `len([1,2,3])` return?',opts:['2','3','4','[1,2,3]'],a:1},
+    {q:'Which is immutable in Python?',opts:['list','dict','tuple','set'],a:2},
+    {q:'What prints `print(type(3.14))`?',opts:["<class 'int'>","<class 'float'>","<class 'double'>","<class 'number'>"],a:1},
+    {q:'What does `range(1,5)` produce?',opts:['[1,2,3,4,5]','[0,1,2,3,4]','[1,2,3,4]','[1,2,3,4,5,6]'],a:2},
+    {q:'How do you declare a constant in Python?',opts:['const PI = 3.14','final PI = 3.14','PI = 3.14 (convention only)','#define PI 3.14'],a:2},
+  ],
+  javascript:[
+    {q:'What is `typeof null`?',opts:['"null"','"undefined"','"object"','"boolean"'],a:2},
+    {q:'Which creates an immutable binding?',opts:['var','let','const','static'],a:2},
+    {q:'What does `[1,2,3].map(x => x*2)` return?',opts:['6','[2,4,6]','[1,2,3]','undefined'],a:1},
+    {q:'What keyword makes a function return a Promise?',opts:['promise','await','async','defer'],a:2},
+    {q:'What does `??` operator do?',opts:['Logical OR','Nullish coalescing','Optional chaining','Bitwise XOR'],a:1},
+  ],
+  cpp:[
+    {q:'What is the correct way to declare a pointer to int?',opts:['int ptr;','int* ptr;','ptr int;','pointer<int> ptr;'],a:1},
+    {q:'Which smart pointer allows shared ownership?',opts:['unique_ptr','weak_ptr','shared_ptr','auto_ptr'],a:2},
+    {q:'What does `virtual` enable in C++?',opts:['Encapsulation','Multiple inheritance','Runtime polymorphism','Templates'],a:2},
+    {q:'Which STL container stores unique sorted elements?',opts:['vector','map','set','list'],a:2},
+    {q:'What does `auto` do in C++11?',opts:['Allocates memory','Infers type','Iterates','Creates pointer'],a:1},
+  ],
+  java:[
+    {q:'Java compiles to:',opts:['Machine code','Bytecode','Assembly','LLVM IR'],a:1},
+    {q:'Which keyword prevents method overriding?',opts:['static','private','final','abstract'],a:2},
+    {q:'Java supports multiple inheritance through:',opts:['classes','abstract classes','interfaces','enums'],a:2},
+    {q:'What does `ArrayList<Integer>` enforce?',opts:['Thread safety','Immutability','Type safety','Ordering'],a:2},
+    {q:'Which Java 8 feature enables pipeline operations on collections?',opts:['Generics','Streams','Lambdas only','Optional'],a:1},
+  ],
+};
+
+function startQuickQuiz(){
+  // Mix questions from all languages
+  const all=Object.values(QUIZBANK).flat();
+  quizData=shuffleArr(all).slice(0,8);
+  quizIdx=0;quizScore=0;quizAnswered=false;
+  showView('quiz');
+  renderQuiz();
+}
+
+function startCourseQuiz(){
+  const lang=currentCourse;
+  quizData=shuffleArr(QUIZBANK[lang]||QUIZBANK.python);
+  quizIdx=0;quizScore=0;quizAnswered=false;
+  showView('quiz');
+  renderQuiz();
+}
+
+function shuffleArr(a){return [...a].sort(()=>Math.random()-.5);}
+
+function renderQuiz(){
+  const el=document.getElementById('quizWrap');
+  if(quizIdx>=quizData.length){
+    const pct=Math.round(quizScore/quizData.length*100);
+    quizScores.push(pct);
+    S.set('scores',quizScores);
+    const circ=2*Math.PI*40;
+    const offset=circ-pct/100*circ;
+    el.innerHTML=`<div class="quiz-result">
+      <div class="score-ring">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="40"/>
+          <circle class="ring-fg" cx="50" cy="50" r="40" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="score-text">${pct}%</div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:6px;">
+        ${pct>=80?'🎉 Excellent!':pct>=60?'👍 Good!':'📚 Keep Practicing!'}
+      </div>
+      <p style="color:var(--text2);margin-bottom:20px;">${quizScore}/${quizData.length} correct</p>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button class="btn btn-primary" onclick="startQuickQuiz()">Try Again</button>
+        <button class="btn btn-secondary" onclick="showView('courses')">Back to Courses</button>
+      </div>
+    </div>`;
+    updateStats();
+    return;
+  }
+  const q=quizData[quizIdx];
+  const pct=Math.round(quizIdx/quizData.length*100);
+  el.innerHTML=`
+    <div class="quiz-prog" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:.78rem;color:var(--text2);">Question ${quizIdx+1} of ${quizData.length}</span>
+      <span style="font-size:.78rem;color:var(--accent);">Score: ${quizScore}</span>
+    </div>
+    <div class="quiz-prog"><div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${pct}%"></div></div></div>
+    <div class="quiz-card" style="margin-top:16px;">
+      <div class="quiz-qnum">Q${quizIdx+1}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts" id="quizOpts">
+        ${q.opts.map((o,i)=>`<div class="quiz-opt" onclick="answerQuiz(${i})">${i+1}. ${o}</div>`).join('')}
+      </div>
+      <div class="quiz-nav">
+        <span id="quizFeedback" style="font-size:.84rem;font-weight:600;"></span>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;">Next →</button>
+      </div>
+    </div>`;
+}
+
+function answerQuiz(idx){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizData[quizIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  const fb=document.getElementById('quizFeedback');
+  opts.forEach((o,i)=>{
+    if(i===q.a)o.classList.add('correct');
+    else if(i===idx)o.classList.add('wrong');
+    else o.classList.add('reveal');
+  });
+  if(idx===q.a){quizScore++;fb.style.color='var(--green)';fb.textContent='✓ Correct!';}
+  else{fb.style.color='var(--red)';fb.textContent='✗ Incorrect';}
+  document.getElementById('nextBtn').style.display='inline-flex';
+}
+
+function nextQuestion(){
+  quizIdx++;
+  quizAnswered=false;
+  renderQuiz();
+}
+
+/* ══════════════════════════════
+   PROFILE
+══════════════════════════════ */
+function populateProfile(){
+  document.getElementById('pLessons').textContent=doneLessons.size;
+  document.getElementById('pQuizzes').textContent=quizScores.length;
+  const avg=quizScores.length?Math.round(quizScores.reduce((a,b)=>a+b,0)/quizScores.length)+'%':'–';
+  document.getElementById('pAvg').textContent=avg;
+  const activeCourses=Object.keys(COURSES).filter(id=>getCourseProgress(id)>0).length;
+  document.getElementById('pCourses').textContent=activeCourses;
+
+  // Course progress
+  const cpl=document.getElementById('courseProgressList');
+  cpl.innerHTML=Object.entries(COURSES).map(([id,c])=>{
+    const p=getCourseProgress(id);
+    const total=getAllLessons(id).length;
+    const done=Math.round(p/100*total);
+    return `<div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <span style="font-size:.82rem;font-weight:600;">${c.icon} ${c.name}</span>
+        <span style="font-size:.72rem;color:var(--text2);font-family:'JetBrains Mono',monospace;">${done}/${total}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>
+      <div class="prog-txt">${p}% complete</div>
+    </div>`;
+  }).join('');
+
+  // Achievements
+  const achs=[];
+  if(doneLessons.size>=1) achs.push({icon:'🚀',title:'First Steps',desc:'Complete your first lesson'});
+  if(doneLessons.size>=5) achs.push({icon:'📚',title:'Bookworm',desc:'Complete 5 lessons'});
+  if(doneLessons.size>=10) achs.push({icon:'🔥',title:'On Fire',desc:'Complete 10 lessons'});
+  if(quizScores.length>=1) achs.push({icon:'🧠',title:'Quiz Taker',desc:'Complete your first quiz'});
+  if(quizScores.some(s=>s>=80)) achs.push({icon:'⭐',title:'High Scorer',desc:'Score 80%+ on a quiz'});
+  if(Object.keys(COURSES).filter(id=>getCourseProgress(id)>0).length>=2) achs.push({icon:'🌐',title:'Multi-Linguist',desc:'Start 2+ languages'});
+  if(achs.length===0) achs.push({icon:'🎯',title:'Getting Started',desc:'Complete a lesson to earn achievements!'});
+
+  document.getElementById('achievementsList').innerHTML=achs.map(a=>`
+    <div class="ach">
+      <div class="ach-ico">${a.icon}</div>
+      <div><div style="font-weight:600;font-size:.84rem;">${a.title}</div><div style="font-size:.75rem;color:var(--text2);">${a.desc}</div></div>
+    </div>`).join('');
+}
+
+function updateStats(){
+  const el=document.getElementById('statDone');
+  if(el)el.textContent=doneLessons.size;
+  const avgEl=document.getElementById('statAvg');
+  if(avgEl){
+    const avg=quizScores.length?Math.round(quizScores.reduce((a,b)=>a+b,0)/quizScores.length)+'%':'–';
+    avgEl.textContent=avg;
+  }
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+buildHomeGrid();
+showCheatsheet('python',document.querySelector('#cheatFilter .filter-pill'));
+showRoadmap('python',document.querySelector('#view-roadmap .filter-pill'));
+refreshChallenges();
+</script>
+</body>
+</html>
