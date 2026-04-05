@@ -487,11 +487,11 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
     <div class="profile-grid">
       <div class="profile-card">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-          <div class="profile-av">P</div>
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;">//KRISH</div>
-            <div style="font-size:.78rem;color:var(--text2);margin-top:2px;">Keep coding every day! 🚀</div>
-          </div>
+          <div class="profile-av" id="profileAv">P</div>          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;" id="displayName">//KRISH</div>
+<input id="nameInput" placeholder="Enter your name…"
+  style="margin-top:4px;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:4px 9px;color:var(--text);font-size:.8rem;outline:none;width:100%;font-family:'DM Sans',sans-serif;"
+  oninput="updateName(this.value)">          </div>
         </div>
         <div class="pstat-grid">
           <div class="pstat"><div class="n" id="pLessons">0</div><div class="l">Lessons</div></div>
@@ -3133,6 +3133,9 @@ function nextQuestion(){
    PROFILE
 ══════════════════════════════ */
 function populateProfile(){
+const savedName = S.get('username') || '';
+const nameInput = document.getElementById('nameInput');
+if (nameInput) { nameInput.value = savedName; updateName(savedName); }
   document.getElementById('pLessons').textContent=doneLessons.size;
   document.getElementById('pQuizzes').textContent=quizScores.length;
   const avg=quizScores.length?Math.round(quizScores.reduce((a,b)=>a+b,0)/quizScores.length)+'%':'–';
@@ -3298,6 +3301,23 @@ buildHomeGrid();
 showCheatsheet('python',document.querySelector('#cheatFilter .filter-pill'));
 showRoadmap('python',document.querySelector('#view-roadmap .filter-pill'));
 refreshChallenges();
+
+function updateName(val) {
+  const clean = val.trim();
+  const letter = clean ? clean[0].toUpperCase() : '?';
+  document.getElementById('profileAv').textContent = letter;
+  document.getElementById('displayName').textContent = clean ? '//' + clean.toUpperCase() : '//USER';
+  S.set('username', clean);
+}
+
+// Load saved name on profile open — add inside populateProfile() at the top:
+// (find the line: document.getElementById('pLessons')... and add BEFORE it)
+const savedName = S.get('username') || '';
+const nameInput = document.getElementById('nameInput');
+if (nameInput) {
+  nameInput.value = savedName;
+  updateName(savedName);
+}
 </script>
 </body>
 </html>
