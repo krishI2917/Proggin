@@ -422,6 +422,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
           <option value="javascript">⚡ JavaScript</option>
           <option value="cpp">⚙️ C++</option>
           <option value="java">☕ Java</option>
+	   <option value="php">🐘 PHP</option>
         </select>
         <button class="btn btn-primary btn-sm" onclick="runCode()">▶ Run</button>
         <button class="btn btn-secondary btn-sm" onclick="clearEditor()">Clear</button>
@@ -456,6 +457,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
       <button class="filter-pill" onclick="showCheatsheet('javascript',this)">⚡ JavaScript</button>
       <button class="filter-pill" onclick="showCheatsheet('cpp',this)">⚙️ C++</button>
       <button class="filter-pill" onclick="showCheatsheet('java',this)">☕ Java</button>
+	 <button class="filter-pill" onclick="showCheatsheet('php',this)">🐘 PHP</button>
     </div>
     <div class="cheat-grid" id="cheatContent"></div>
   </div>
@@ -471,6 +473,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
       <button class="filter-pill" onclick="showRoadmap('javascript',this)">⚡ JavaScript</button>
       <button class="filter-pill" onclick="showRoadmap('cpp',this)">⚙️ C++</button>
       <button class="filter-pill" onclick="showRoadmap('java',this)">☕ Java</button>
+	 <button class="filter-pill" onclick="showRoadmap('php',this)">🐘 PHP</button>
     </div>
     <div id="roadmapContent" class="rm-list"></div>
   </div>
@@ -2266,7 +2269,639 @@ public class Main {
     ]},
   ]
 },
+
+php:{
+  name:'PHP',icon:'🐘',
+  stripe:'linear-gradient(90deg,#7c3aed,#a855f7)',
+  color:'rgba(124,58,237,0.07)',
+  level:'Beginner → Advanced',
+  desc:'The backbone of the web. Learn PHP from basics through OOP, PDO, sessions, REST APIs, and Laravel fundamentals.',
+  sections:[
+   	{title:'🟢 Beginner',lessons:[
+      {id:'php1',title:'Introduction to PHP',lang:'php',
+       theory:`<p>PHP (Hypertext Preprocessor) is a server-side scripting language created by <strong>Rasmus Lerdorf</strong> in 1994. It powers over 77% of all websites with a known server-side language, including WordPress, Facebook (originally), and Wikipedia.</p>
+<div class="callout callout-b"><strong>Why PHP?</strong> Easy to learn, runs on any server (Apache/Nginx), integrates with MySQL perfectly, and has a massive ecosystem (WordPress, Laravel, Symfony, Drupal).</div>
+<p>Key characteristics:</p>
+<ul>
+<li><strong>Server-side</strong> — runs on the server, sends HTML to browser</li>
+<li><strong>Interpreted</strong> — no compilation needed</li>
+<li><strong>Weakly typed</strong> — variables don't need type declarations</li>
+<li><strong>Embedded in HTML</strong> — PHP lives inside &lt;?php ... ?&gt; tags</li>
+<li><strong>Huge ecosystem</strong> — Composer package manager, 100k+ packages</li>
+</ul>
+<div class="callout callout-g"><strong>💡 Run PHP:</strong> Install XAMPP/WAMP or use: <code>php -S localhost:8000</code></div>`,
+       code:`<?php
+// Hello World
+echo "Hello, World!\\n";
+
+// Variables — start with $
+$name = "Alice";
+$age = 25;
+$height = 5.6;
+$isStudent = true;
+$nothing = null;
+
+// String concatenation with .
+echo "Name: " . $name . ", Age: " . $age . "\\n";
+
+// Double-quoted strings support variable interpolation
+echo "Name: $name, Age: $age\\n";
+echo "Height: {$height}m\\n";
+
+// Data types
+echo gettype($name);      // string
+echo "\\n";
+echo gettype($age);       // integer
+echo "\\n";
+echo gettype($height);    // double
+echo "\\n";
+echo gettype($isStudent); // boolean
+echo "\\n";
+
+// Constants
+define('MAX_SIZE', 100);
+const APP_NAME = 'ProGGin';
+echo "App: " . APP_NAME . "\\n";
+echo "Max: " . MAX_SIZE . "\\n";
+
+// Type juggling
+$num = "10" + 5;
+echo $num;         // 15
+echo "\\n";
+
+// var_dump — shows type AND value
+var_dump($isStudent);   // bool(true)
+var_dump($nothing);     // NULL
+?>`},
+
+      {id:'php2',title:'Variables, Strings & Operators',lang:'php',
+       theory:`<p>PHP has rich string functions and flexible operators. Understanding type juggling is key to avoiding bugs.</p>
+<div class="callout callout-b"><strong>String types:</strong><br>• Single quotes <code>'text'</code> — literal, no interpolation<br>• Double quotes <code>"text $var"</code> — interpolation supported<br>• Heredoc <code>&lt;&lt;&lt;EOT</code> — multiline with interpolation<br>• Nowdoc <code>&lt;&lt;&lt;'EOT'</code> — multiline literal</div>
+<div class="callout callout-y"><strong>⚠️ Loose comparison:</strong> Use <code>===</code> (strict) not <code>==</code> (loose) to avoid type-juggling surprises like <code>0 == "foo"</code> being true!</div>`,
+       code:`<?php
+// String functions
+$str = "  Hello, PHP World!  ";
+echo strlen($str) . "\\n";
+echo strtoupper($str) . "\\n";
+echo strtolower($str) . "\\n";
+echo trim($str) . "\\n";
+echo str_replace("PHP", "Pro", $str) . "\\n";
+echo substr($str, 7, 3) . "\\n";
+echo strpos($str, "PHP") . "\\n";
+echo str_repeat("ab", 3) . "\\n";
+echo str_word_count(trim($str)) . "\\n";
+
+// String padding & formatting
+echo str_pad("42", 5, "0", STR_PAD_LEFT) . "\\n";
+echo number_format(1234567.891, 2) . "\\n";
+echo sprintf("Name: %-10s Age: %03d", "Alice", 25) . "\\n";
+
+// Heredoc
+$name = "PHP";
+$heredoc = <<<EOT
+Hello from $name!
+This is a multiline string.
+It supports {$name} interpolation.
+EOT;
+echo $heredoc . "\\n";
+
+// Operators
+$a = 10; $b = 3;
+echo ($a + $b) . "\\n";
+echo ($a - $b) . "\\n";
+echo ($a * $b) . "\\n";
+echo ($a / $b) . "\\n";
+echo ($a % $b) . "\\n";
+echo ($a ** $b) . "\\n";
+
+// Strict vs loose comparison
+var_dump(0 == "foo");   // bool(true) — LOOSE, dangerous!
+var_dump(0 === "foo");  // bool(false) — STRICT, safe
+
+// Null coalescing (PHP 7+)
+$user = null;
+$name = $user ?? "Guest";
+echo $name . "\\n";
+
+// Spaceship operator
+echo (1 <=> 2) . "\\n";  // -1
+echo (2 <=> 2) . "\\n";  // 0
+echo (3 <=> 2) . "\\n";  // 1
+?>`},
+
+      {id:'php3',title:'Control Flow',lang:'php',
+       theory:`<p>PHP control flow is similar to C and JavaScript. It supports if/elseif/else, switch, match (PHP 8), for, foreach, while, and do-while.</p>
+<div class="callout callout-b"><strong>match (PHP 8+):</strong> Like switch but strict comparison, returns a value, no fallthrough.<br><strong>foreach:</strong> The most used loop in PHP — iterates arrays and objects cleanly.</div>
+<div class="callout callout-g"><strong>💡 Alternative syntax:</strong> PHP supports <code>if(): ... endif;</code> style for HTML templates.</div>`,
+       code:`<?php
+// if / elseif / else
+$score = 82;
+if ($score >= 90) {
+    $grade = 'A';
+} elseif ($score >= 80) {
+    $grade = 'B';
+} elseif ($score >= 70) {
+    $grade = 'C';
+} else {
+    $grade = 'F';
+}
+echo "Grade: $grade\\n";
+
+// Ternary
+$status = ($score >= 60) ? 'Pass' : 'Fail';
+echo "$status\\n";
+
+// match expression (PHP 8+)
+$day = 'Monday';
+$type = match($day) {
+    'Monday','Tuesday','Wednesday','Thursday','Friday' => 'Weekday',
+    'Saturday','Sunday' => 'Weekend',
+    default => 'Unknown'
 };
+echo "$type\\n";
+
+// switch
+switch ($grade) {
+    case 'A': echo "Excellent!\\n"; break;
+    case 'B': echo "Good!\\n"; break;
+    default:  echo "Keep trying!\\n";
+}
+
+// for loop
+for ($i = 1; $i <= 5; $i++) {
+    echo "$i ";
+}
+echo "\\n";
+
+// foreach
+$fruits = ['apple', 'banana', 'cherry'];
+foreach ($fruits as $fruit) {
+    echo "$fruit ";
+}
+echo "\\n";
+
+// foreach with key => value
+$person = ['name' => 'Alice', 'age' => 25, 'city' => 'NYC'];
+foreach ($person as $key => $value) {
+    echo "$key: $value\\n";
+}
+
+// while
+$n = 1;
+while ($n <= 32) {
+    echo "$n ";
+    $n *= 2;
+}
+echo "\\n";
+
+// do-while
+$count = 0;
+do {
+    echo "Count: $count\\n";
+    $count++;
+} while ($count < 3);
+
+// break and continue
+for ($i = 0; $i < 10; $i++) {
+    if ($i === 3) continue;
+    if ($i === 7) break;
+    echo "$i ";
+}
+echo "\\n";
+?>`},
+
+      {id:'php4',title:'Functions',lang:'php',
+       theory:`<p>PHP functions support type hints, default values, variadic args, return types, and anonymous functions (closures).</p>
+<div class="callout callout-b"><strong>Type hints (PHP 7+):</strong> Add types to parameters and return values for safety.<br><strong>Closures:</strong> Anonymous functions that can capture outer variables with <code>use</code>.<br><strong>Arrow functions (PHP 7.4+):</strong> <code>fn($x) =&gt; $x * 2</code></div>`,
+       code:`<?php
+// Basic function with type hints
+function greet(string $name, string $title = 'Friend'): string {
+    return "Hello, $title $name!";
+}
+echo greet("Alice") . "\\n";
+echo greet("Bob", "Dr.") . "\\n";
+
+// Multiple return via array
+function minMax(array $numbers): array {
+    return [min($numbers), max($numbers)];
+}
+[$lo, $hi] = minMax([3, 1, 4, 1, 5, 9]);
+echo "Min: $lo, Max: $hi\\n";
+
+// Variadic arguments
+function sumAll(int ...$nums): int {
+    return array_sum($nums);
+}
+echo sumAll(1, 2, 3, 4, 5) . "\\n";
+
+// Pass by reference
+function addSuffix(string &$str, string $suffix): void {
+    $str .= $suffix;
+}
+$name = "Alice";
+addSuffix($name, " Smith");
+echo $name . "\\n";
+
+// Recursive function
+function factorial(int $n): int {
+    return $n <= 1 ? 1 : $n * factorial($n - 1);
+}
+echo factorial(5) . "\\n";
+
+// Anonymous function (closure)
+$multiply = function(int $a, int $b): int {
+    return $a * $b;
+};
+echo $multiply(4, 5) . "\\n";
+
+// Closure capturing outer variable
+$prefix = "Hello";
+$greetFn = function(string $name) use ($prefix): string {
+    return "$prefix, $name!";
+};
+echo $greetFn("World") . "\\n";
+
+// Arrow function (PHP 7.4+)
+$multiplier = 3;
+$triple = fn($x) => $x * $multiplier;
+echo $triple(7) . "\\n";
+
+// Higher-order functions
+$numbers = [1, 2, 3, 4, 5];
+$doubled = array_map(fn($n) => $n * 2, $numbers);
+$evens   = array_filter($numbers, fn($n) => $n % 2 === 0);
+$total   = array_reduce($numbers, fn($carry, $n) => $carry + $n, 0);
+
+echo implode(', ', $doubled) . "\\n";
+echo implode(', ', $evens) . "\\n";
+echo "Total: $total\\n";
+?>`},
+    ]},
+
+    {title:'🟡 Intermediate',lessons:[
+      {id:'php5',title:'Arrays',lang:'php',
+       theory:`<p>PHP arrays are incredibly versatile — they can act as lists, maps, stacks, or queues. PHP has 70+ built-in array functions.</p>
+<div class="callout callout-b"><strong>Indexed array:</strong> <code>[1, 2, 3]</code> — numeric keys<br><strong>Associative array:</strong> <code>['key' =&gt; 'value']</code> — string keys<br><strong>Multidimensional:</strong> Arrays within arrays</div>`,
+       code:`<?php
+// ── INDEXED ARRAYS ──
+$fruits = ['apple', 'banana', 'cherry'];
+$fruits[] = 'mango';
+array_push($fruits, 'kiwi');
+array_unshift($fruits, 'pear');
+
+echo count($fruits) . "\\n";
+echo implode(', ', $fruits) . "\\n";
+
+// Slicing
+$slice = array_slice($fruits, 1, 3);
+echo implode(', ', $slice) . "\\n";
+
+// Sorting
+$nums = [3, 1, 4, 1, 5, 9, 2, 6];
+sort($nums);
+echo implode(' ', $nums) . "\\n";
+
+rsort($nums);
+echo implode(' ', $nums) . "\\n";
+
+// Array functions
+$unique = array_unique([1, 2, 2, 3, 3, 4]);
+echo implode(' ', $unique) . "\\n";
+
+$merged = array_merge([1, 2], [3, 4], [5, 6]);
+echo implode(' ', $merged) . "\\n";
+
+// ── ASSOCIATIVE ARRAYS ──
+$person = [
+    'name'   => 'Alice',
+    'age'    => 25,
+    'skills' => ['PHP', 'MySQL', 'Laravel'],
+];
+
+echo $person['name'] . "\\n";
+echo $person['skills'][0] . "\\n";
+
+if (array_key_exists('age', $person)) {
+    echo "Age: {$person['age']}\\n";
+}
+
+$person['city'] = 'NYC';
+$person['age']  = 26;
+unset($person['city']);
+
+foreach ($person as $key => $val) {
+    if (is_array($val)) {
+        echo "$key: " . implode(', ', $val) . "\\n";
+    } else {
+        echo "$key: $val\\n";
+    }
+}
+
+// ── ARRAY FUNCTIONS ──
+$numbers = range(1, 10);
+$evens   = array_filter($numbers, fn($n) => $n % 2 === 0);
+$squares = array_map(fn($n) => $n ** 2, $numbers);
+$sum     = array_sum($numbers);
+
+echo "Evens: " . implode(' ', $evens) . "\\n";
+echo "Squares: " . implode(' ', $squares) . "\\n";
+echo "Sum: $sum\\n";
+
+// usort
+$people = [
+    ['name' => 'Carol', 'age' => 30],
+    ['name' => 'Alice', 'age' => 25],
+    ['name' => 'Bob',   'age' => 28],
+];
+usort($people, fn($a, $b) => $a['age'] <=> $b['age']);
+foreach ($people as $p) echo "{$p['name']}: {$p['age']}\\n";
+?>`},
+
+      {id:'php6',title:'OOP — Classes & Objects',lang:'php',
+       theory:`<p>PHP OOP supports classes, interfaces, abstract classes, traits, visibility, static members, and type declarations.</p>
+<div class="callout callout-b"><strong>Visibility:</strong> <code>public</code>, <code>protected</code>, <code>private</code><br><strong>Interfaces:</strong> Contracts — define what, not how<br><strong>Traits:</strong> Code reuse without inheritance<br><strong>Abstract:</strong> Can't instantiate — must extend</div>`,
+       code:`<?php
+interface Drawable {
+    public function draw(): string;
+    public function getArea(): float;
+}
+
+abstract class Shape implements Drawable {
+    protected string $color;
+    private static int $count = 0;
+
+    public function __construct(string $color = 'black') {
+        $this->color = $color;
+        self::$count++;
+    }
+
+    public static function getCount(): int { return self::$count; }
+    public function getColor(): string { return $this->color; }
+
+    abstract public function getArea(): float;
+    abstract public function draw(): string;
+}
+
+trait Serializable {
+    public function toArray(): array { return get_object_vars($this); }
+    public function toJson(): string { return json_encode($this->toArray()); }
+}
+
+class Circle extends Shape {
+    use Serializable;
+    public function __construct(
+        private float $radius,
+        string $color = 'red'
+    ) { parent::__construct($color); }
+
+    public function getArea(): float { return M_PI * $this->radius ** 2; }
+    public function draw(): string {
+        return "Drawing Circle(r={$this->radius}, color={$this->color})";
+    }
+}
+
+class Rectangle extends Shape {
+    use Serializable;
+    public function __construct(
+        private float $width,
+        private float $height,
+        string $color = 'blue'
+    ) { parent::__construct($color); }
+
+    public function getArea(): float { return $this->width * $this->height; }
+    public function draw(): string {
+        return "Drawing Rect({$this->width}x{$this->height}, color={$this->color})";
+    }
+}
+
+$shapes = [
+    new Circle(5.0, 'red'),
+    new Rectangle(4.0, 6.0, 'blue'),
+    new Circle(3.0, 'green'),
+];
+
+foreach ($shapes as $shape) {
+    echo $shape->draw() . "\\n";
+    echo "Area: " . number_format($shape->getArea(), 2) . "\\n";
+}
+
+echo "Total shapes: " . Shape::getCount() . "\\n";
+$c = new Circle(5.0);
+echo $c->toJson() . "\\n";
+?>`},
+
+      {id:'php7',title:'Error Handling & File I/O',lang:'php',
+       theory:`<p>PHP uses exceptions for error handling and has powerful file functions. Modern PHP uses typed exceptions and try/catch/finally.</p>
+<div class="callout callout-b"><strong>try/catch/finally:</strong> Same as Java/JS pattern.<br><strong>Custom exceptions:</strong> Extend Exception class.<br><strong>set_exception_handler:</strong> Global uncaught exception handler.</div>
+<div class="callout callout-y"><strong>⚠️ File I/O:</strong> Always close file handles. Use <code>file_get_contents</code>/<code>file_put_contents</code> for simple operations.</div>`,
+       code:`<?php
+class ValidationException extends RuntimeException {
+    public function __construct(
+        private string $field,
+        string $message,
+        int $code = 0
+    ) { parent::__construct("[$field] $message", $code); }
+    public function getField(): string { return $this->field; }
+}
+
+function validateAge(int $age): bool {
+    if ($age < 0 || $age > 150) {
+        throw new ValidationException('age', "Must be 0-150, got $age");
+    }
+    return true;
+}
+
+function divide(float $a, float $b): float {
+    if ($b === 0.0) throw new \\DivisionByZeroError("Cannot divide by zero");
+    return $a / $b;
+}
+
+try {
+    echo divide(10, 2) . "\\n";
+    echo divide(10, 0) . "\\n";
+} catch (\\DivisionByZeroError $e) {
+    echo "Math error: " . $e->getMessage() . "\\n";
+} finally {
+    echo "Division attempt done.\\n";
+}
+
+try {
+    validateAge(-5);
+} catch (ValidationException $e) {
+    echo "Validation failed [{$e->getField()}]: {$e->getMessage()}\\n";
+} catch (\\Exception $e) {
+    echo "Generic error: " . $e->getMessage() . "\\n";
+}
+
+$data = "Hello from PHP!\\nLine 2\\nLine 3";
+file_put_contents('/tmp/test.txt', $data);
+echo "File written.\\n";
+
+$content = file_get_contents('/tmp/test.txt');
+echo $content . "\\n";
+
+$lines = file('/tmp/test.txt', FILE_IGNORE_NEW_LINES);
+foreach ($lines as $i => $line) {
+    echo "Line $i: $line\\n";
+}
+
+$userData = ['name' => 'Alice', 'scores' => [95, 87, 92], 'active' => true];
+$json = json_encode($userData, JSON_PRETTY_PRINT);
+echo $json . "\\n";
+
+$decoded = json_decode($json, true);
+echo "Name: " . $decoded['name'] . "\\n";
+?>`},
+    ]},
+
+    {title:'🔴 Advanced',lessons:[
+      {id:'php8',title:'PDO & Database',lang:'php',
+       theory:`<p>PDO (PHP Data Objects) provides a consistent interface for database access. Always use prepared statements to prevent SQL injection.</p>
+<div class="callout callout-b"><strong>Prepared statements:</strong> <code>?</code> or <code>:name</code> placeholders — never concatenate user input into SQL!<br><strong>PDO supports:</strong> MySQL, PostgreSQL, SQLite, SQL Server, and more.</div>
+<div class="callout callout-r"><strong>🚨 Never:</strong> <code>$sql = "SELECT * FROM users WHERE id = " . $_GET['id']</code> — this is SQL injection!</div>`,
+       code:`<?php
+try {
+    $pdo = new PDO('sqlite:/tmp/demo.db');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+        id      INTEGER PRIMARY KEY AUTOINCREMENT,
+        name    TEXT NOT NULL,
+        email   TEXT UNIQUE NOT NULL,
+        age     INTEGER,
+        created TEXT DEFAULT CURRENT_TIMESTAMP
+    )");
+    echo "Table ready.\\n";
+
+    $stmt = $pdo->prepare(
+        "INSERT OR IGNORE INTO users (name, email, age) VALUES (:name, :email, :age)"
+    );
+    $users = [
+        ['name' => 'Alice', 'email' => 'alice@example.com', 'age' => 25],
+        ['name' => 'Bob',   'email' => 'bob@example.com',   'age' => 30],
+        ['name' => 'Carol', 'email' => 'carol@example.com', 'age' => 28],
+    ];
+    foreach ($users as $user) { $stmt->execute($user); }
+    echo "Inserted users.\\n";
+
+    $all = $pdo->query("SELECT * FROM users")->fetchAll();
+    foreach ($all as $row) {
+        echo "{$row['id']}: {$row['name']} ({$row['email']}) age={$row['age']}\\n";
+    }
+
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE age >= :min_age ORDER BY age");
+    $stmt->execute(['min_age' => 26]);
+    echo "\\nUsers 26+:\\n";
+    foreach ($stmt->fetchAll() as $row) {
+        echo "  {$row['name']}, {$row['age']}\\n";
+    }
+
+    $pdo->beginTransaction();
+    try {
+        $pdo->exec("INSERT INTO users (name,email,age) VALUES ('Dave','dave@x.com',22)");
+        $pdo->exec("UPDATE users SET age = 100 WHERE name = 'Dave'");
+        $pdo->commit();
+        echo "Transaction committed.\\n";
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo "Rolled back: " . $e->getMessage() . "\\n";
+    }
+
+    $count = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    echo "Total users: $count\\n";
+
+} catch (PDOException $e) {
+    echo "DB Error: " . $e->getMessage() . "\\n";
+}
+?>`},
+
+      {id:'php9',title:'REST API & Modern PHP',lang:'php',
+       theory:`<p>Modern PHP powers REST APIs, uses Composer for dependency management, and follows PSR standards. PHP 8+ adds union types, named arguments, fibers, and more.</p>
+<div class="callout callout-b"><strong>REST API pattern:</strong> Route by $_SERVER['REQUEST_METHOD'] and path.<br><strong>Named arguments (PHP 8+):</strong> <code>fn(name: 'Alice', age: 25)</code><br><strong>Enums (PHP 8.1+):</strong> Type-safe constant groups.</div>`,
+       code:`<?php
+// Named arguments (PHP 8+)
+function createUser(string $name, int $age, string $role = 'user'): array {
+    return compact('name', 'age', 'role');
+}
+$u = createUser(age: 25, name: 'Alice', role: 'admin');
+print_r($u);
+
+// Null safe operator
+class Address {
+    public function __construct(public string $city = 'NYC') {}
+    public function getCity(): string { return $this->city; }
+}
+class User {
+    public ?Address $address;
+    public function __construct(?Address $addr = null) { $this->address = $addr; }
+}
+
+$user = new User(new Address('Boston'));
+echo $user?->address?->getCity() . "\\n";
+
+$user2 = new User();
+echo ($user2?->address?->getCity() ?? 'No city') . "\\n";
+
+// Union types (PHP 8+)
+function processInput(int|string $input): string {
+    return is_int($input) ? "Number: $input" : "String: $input";
+}
+echo processInput(42) . "\\n";
+echo processInput("hello") . "\\n";
+
+// Enums (PHP 8.1+)
+enum Status: string {
+    case Active   = 'active';
+    case Inactive = 'inactive';
+    case Pending  = 'pending';
+
+    public function label(): string {
+        return match($this) {
+            Status::Active   => '✅ Active',
+            Status::Inactive => '❌ Inactive',
+            Status::Pending  => '⏳ Pending',
+        };
+    }
+}
+
+echo Status::Active->value . "\\n";
+echo Status::Active->label() . "\\n";
+echo Status::from('pending')->label() . "\\n";
+
+// Readonly properties (PHP 8.1+)
+class Point {
+    public function __construct(
+        public readonly float $x,
+        public readonly float $y,
+    ) {}
+    public function distanceTo(Point $other): float {
+        return sqrt(($this->x - $other->x)**2 + ($this->y - $other->y)**2);
+    }
+}
+
+$p1 = new Point(0, 0);
+$p2 = new Point(3, 4);
+echo "Distance: " . $p1->distanceTo($p2) . "\\n";
+
+// Simple REST router demo
+$routes = [
+    'GET /users'   => fn() => ['users' => [['id'=>1,'name'=>'Alice'],['id'=>2,'name'=>'Bob']]],
+    'POST /users'  => fn() => ['created' => true, 'id' => 3],
+    'GET /users/1' => fn() => ['id' => 1, 'name' => 'Alice', 'age' => 25],
+];
+
+$key = 'GET /users';
+if (isset($routes[$key])) {
+    echo json_encode(($routes[$key])(), JSON_PRETTY_PRINT) . "\\n";
+}
+?>`},
+    ]},
+  ]
+},
+};
+
+
 
 /* ══════════════════════════════
    BUILD SIDEBAR LANGS
@@ -2637,6 +3272,60 @@ public class Main {
     }
 }`},
   ],
+  php:[
+    {title:'Hello PHP',desc:'Print Hello World and basic variable output',diff:'e',
+     code:``},
+    {title:'FizzBuzz',desc:'Print 1-50; multiples of 3 → "Fizz", 5 → "Buzz", both → "FizzBuzz"',diff:'e',
+     code:``},
+    {title:'Array Operations',desc:'Filter, map, reduce an array using PHP functions',diff:'m',
+     code:` $n % 2 === 0);
+$squares = array_map(fn($n) => $n ** 2, $evens);
+$sum     = array_reduce($squares, fn($carry, $n) => $carry + $n, 0);
+
+echo "Evens: " . implode(', ', $evens) . "\\n";
+echo "Squares of evens: " . implode(', ', $squares) . "\\n";
+echo "Sum of squares: $sum\\n";
+
+// usort
+$words = ['banana', 'apple', 'cherry', 'kiwi'];
+usort($words, fn($a, $b) => strlen($a) <=> strlen($b));
+echo "By length: " . implode(', ', $words) . "\\n";
+?>`},
+    {title:'OOP — Bank Account',desc:'Implement a simple bank account class',diff:'m',
+     code:`balance = $initial;
+        $this->history[] = "Opened with $$initial";
+    }
+
+    public function deposit(float $amount): self {
+        if ($amount <= 0) throw new \\InvalidArgumentException("Amount must be positive");
+        $this->balance += $amount;
+        $this->history[] = "Deposited $$amount → Balance: \${$this->balance}";
+        return $this;
+    }
+
+    public function withdraw(float $amount): self {
+        if ($amount > $this->balance) throw new \\RuntimeException("Insufficient funds");
+        $this->balance -= $amount;
+        $this->history[] = "Withdrew $$amount → Balance: \${$this->balance}";
+        return $this;
+    }
+
+    public function getBalance(): float { return $this->balance; }
+
+    public function printHistory(): void {
+        echo "=== {$this->owner}'s Account ===\\n";
+        foreach ($this->history as $entry) echo "  $entry\\n";
+    }
+}
+
+$acc = new BankAccount("Alice", 100.0);
+$acc->deposit(50)->deposit(25)->withdraw(30);
+$acc->printHistory();
+echo "Final: \$" . $acc->getBalance() . "\\n";
+?>`},
+    {title:'Recursive Fibonacci',desc:'Memoized Fibonacci with closure',diff:'h',
+     code:``},
+  ],
 };
 
 function refreshChallenges(){
@@ -2666,6 +3355,8 @@ function runCode(){
   if(lang==='python'){
     runPython(code,out);
   } else if(lang==='javascript'){
+    runJS(code,out);
+ } else if(lang==='javascript'){
     runJS(code,out);
   } else {
     out.innerHTML=`<span class="out-info">// ${lang.toUpperCase()} can't run in browser.\n// Copy the code and run locally:\n// C++: g++ file.cpp -o app && ./app\n// Java: javac Main.java && java Main</span>`;
@@ -2931,6 +3622,70 @@ const CHEATSHEETS={
       {k:'throws ExceptionType',v:'Declare thrown exceptions'},
       {k:'try-with-resources',v:'Auto-close resources'},
     ],
+  }, 
+php:{
+    'Basics':[
+      {k:'echo "text";',v:'Output text'},
+      {k:'var_dump($x)',v:'Debug — type + value'},
+      {k:'print_r($arr)',v:'Human-readable array print'},
+      {k:'isset($x)',v:'Check if var exists & not null'},
+      {k:'empty($x)',v:'Check if empty/falsy'},
+      {k:'gettype($x)',v:'Get variable type string'},
+    ],
+    'String Functions':[
+      {k:'strlen($s)',v:'String length'},
+      {k:'strtoupper/lower($s)',v:'Case conversion'},
+      {k:'trim($s)',v:'Remove whitespace'},
+      {k:'str_replace($a,$b,$s)',v:'Replace substring'},
+      {k:'substr($s,$start,$len)',v:'Get substring'},
+      {k:'strpos($s,$needle)',v:'Find position of substring'},
+      {k:'explode(",", $s)',v:'Split string to array'},
+      {k:'implode(", ", $arr)',v:'Join array to string'},
+      {k:'sprintf("%s %d", $a,$b)',v:'Format string'},
+    ],
+    'Array Functions':[
+      {k:'count($arr)',v:'Number of elements'},
+      {k:'array_push($arr, $x)',v:'Add to end'},
+      {k:'array_pop($arr)',v:'Remove last element'},
+      {k:'array_merge($a, $b)',v:'Merge arrays'},
+      {k:'array_map($fn, $arr)',v:'Transform elements'},
+      {k:'array_filter($arr, $fn)',v:'Filter elements'},
+      {k:'array_reduce($arr,$fn,$init)',v:'Fold to single value'},
+      {k:'sort() / rsort()',v:'Sort ascending/descending'},
+      {k:'usort($arr, $fn)',v:'Sort with custom comparator'},
+      {k:'in_array($v, $arr)',v:'Check value exists'},
+      {k:'array_key_exists($k,$arr)',v:'Check key exists'},
+      {k:'array_unique($arr)',v:'Remove duplicates'},
+      {k:'array_flip($arr)',v:'Swap keys and values'},
+    ],
+    'Control Flow':[
+      {k:'if/elseif/else',v:'Conditional (note: elseif)'},
+      {k:'match($x) { v => r }',v:'Switch-like, strict (PHP 8)'},
+      {k:'foreach($arr as $v)',v:'Iterate array values'},
+      {k:'foreach($arr as $k=>$v)',v:'Iterate key-value pairs'},
+      {k:'for/while/do-while',v:'Loop types'},
+      {k:'break / continue',v:'Exit / skip loop'},
+    ],
+    'OOP':[
+      {k:'class Name { }',v:'Define class'},
+      {k:'public/protected/private',v:'Visibility modifiers'},
+      {k:'$this->prop',v:'Access instance property'},
+      {k:'self::$prop',v:'Access static property'},
+      {k:'extends / implements',v:'Inheritance / interface'},
+      {k:'abstract class/method',v:'Must be subclassed'},
+      {k:'interface Name { }',v:'Contract definition'},
+      {k:'trait Name { }',v:'Reusable code mix-in'},
+      {k:'readonly property (8.1)',v:'Immutable after init'},
+    ],
+    'Superglobals & Web':[
+      {k:'$_GET / $_POST',v:'Query string / form data'},
+      {k:'$_SERVER["REQUEST_METHOD"]',v:'HTTP method (GET/POST)'},
+      {k:'$_SESSION / $_COOKIE',v:'Session and cookie data'},
+      {k:'$_FILES',v:'Uploaded file data'},
+      {k:'header("Content-Type: app/json")',v:'Set response header'},
+      {k:'json_encode($arr)',v:'Array to JSON string'},
+      {k:'json_decode($json, true)',v:'JSON to associative array'},
+    ],
   },
 };
 
@@ -2989,6 +3744,15 @@ const ROADMAPS={
     {n:6,title:'Concurrency',desc:'Threads, Runnable, ExecutorService, CompletableFuture, synchronized, volatile.',tags:['Threads','CompletableFuture','Sync']},
     {n:7,title:'Spring Boot & Microservices',desc:'Spring MVC, REST controllers, JPA/Hibernate, Spring Security, Docker, microservices.',tags:['Spring','REST','Docker']},
   ],
+ php:[
+    {n:1,title:'PHP Fundamentals',desc:'Variables, data types, operators, strings, control flow (if/elseif/match), and loops (for/foreach/while).',tags:['Syntax','Types','Loops']},
+    {n:2,title:'Functions & Arrays',desc:'Functions with type hints, closures, arrow functions, variadic args, and PHP\'s 70+ array functions.',tags:['Functions','Arrays','Closures']},
+    {n:3,title:'OOP in PHP',desc:'Classes, interfaces, abstract classes, traits, visibility, static members, constructor promotion.',tags:['OOP','Traits','Interfaces']},
+    {n:4,title:'Error Handling & File I/O',desc:'try/catch/finally, custom exceptions, file_get/put_contents, JSON encode/decode, CSV handling.',tags:['Exceptions','Files','JSON']},
+    {n:5,title:'Database with PDO',desc:'Connect to MySQL/SQLite with PDO, prepared statements, transactions, fetch modes, query builder patterns.',tags:['PDO','MySQL','SQL']},
+    {n:6,title:'Web & HTTP',desc:'Superglobals ($_GET, $_POST), sessions, cookies, headers, REST API routing, input validation.',tags:['HTTP','REST','Sessions']},
+    {n:7,title:'Laravel & Ecosystem',desc:'Composer, Laravel MVC, Eloquent ORM, Blade templates, middleware, queues, Artisan CLI.',tags:['Laravel','Composer','Eloquent']},
+  ],
 };
 
 function showRoadmap(lang,btn){
@@ -3037,6 +3801,16 @@ const QUIZBANK={
     {q:'Java supports multiple inheritance through:',opts:['classes','abstract classes','interfaces','enums'],a:2},
     {q:'What does `ArrayList<Integer>` enforce?',opts:['Thread safety','Immutability','Type safety','Ordering'],a:2},
     {q:'Which Java 8 feature enables pipeline operations on collections?',opts:['Generics','Streams','Lambdas only','Optional'],a:1},
+  ],
+ php:[
+    {q:'Which symbol starts every PHP variable?',opts:['@','#','$','&'],a:2},
+    {q:'What does `===` check in PHP?',opts:['Value only','Type only','Value AND type','Neither'],a:2},
+    {q:'Which function splits a string into an array?',opts:['split()','str_split()','explode()','divide()'],a:2},
+    {q:'What is the output of `echo gettype(3.14);`?',opts:['"float"','"double"','"decimal"','"number"'],a:1},
+    {q:'Which PHP 8+ feature replaced switch with strict comparison?',opts:['if-chain','match','cond','select'],a:1},
+    {q:'How do you access form POST data in PHP?',opts:['$_FORM','$_POST','$_REQUEST only','$POST'],a:1},
+    {q:'What does PDO stand for?',opts:['PHP Data Output','PHP Database Object','PHP Data Objects','PHP Direct Object'],a:2},
+    {q:'Which keyword enables code reuse without inheritance in PHP?',opts:['mixin','include','trait','extends'],a:2},
   ],
 };
 
