@@ -24,15 +24,15 @@ a{color:inherit;text-decoration:none;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 
 /* ── TOPBAR ── */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;background:rgba(8,12,20,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;background:rgba(8,12,20,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px;flex-wrap:nowrap;overflow:visible;}
 [data-theme="light"] .topbar{background:rgba(241,244,252,.92);}
-.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex-shrink:1;min-width:0;}
 .nav-tabs::-webkit-scrollbar{display:none;}
 .nav-tab{padding:5px 13px;border-radius:7px;font-size:0.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .nav-tab:hover{color:var(--text);background:var(--card);}
 .nav-tab.active{background:var(--accent);color:#000;}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;white-space:nowrap;}
 .theme-btn{width:38px;height:20px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .3s;}
 .theme-btn::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--accent);transition:transform .3s;}
 [data-theme="light"] .theme-btn::after{transform:translateX(18px);background:var(--accent3);}
@@ -130,8 +130,8 @@ a{color:inherit;text-decoration:none;}
 .ls-item.done .ls-dot{background:var(--green);border-color:var(--green);color:#000;}
 .ls-dot{width:20px;height:20px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;flex-shrink:0;transition:all .2s;}
 
-.lesson-body{padding:32px 44px 56px;max-width:860px;}
-.lesson-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px;}
+.lesson-body{padding:80px 44px 56px;max-width:860px;color:var(--text);background:var(--bg);}
+.lesson-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px;color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;background:none !important;}
 .lesson-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px;}
 
 .theory-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px;}
@@ -184,7 +184,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
 .diff-h{background:rgba(255,77,109,.1);color:var(--red);}
 
 /* ── QUIZ ── */
-.quiz-wrap{max-width:640px;margin:0 auto;padding:30px 36px;}
+.quiz-wrap{max-width:640px;margin:0 auto;padding:30px 36px;min-height:calc(100vh - 56px);display:flex;flex-direction:column;justify-content:center;}
 .quiz-prog{margin-bottom:20px;}
 .quiz-prog-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
 .quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .4s;}
@@ -260,7 +260,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
   .main{margin-left:0;}
   .hero{padding:28px 18px;}
   .sec{padding:20px 18px;}
-  .lesson-body{padding:20px 18px 36px;}
+  .lesson-body{padding:76px 18px 36px;}
 }
 @media(max-width:600px){
   .hero h1{font-size:1.1rem;}
@@ -268,11 +268,11 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
   .hero-pill{font-size:.65rem;padding:3px 9px;}
 }
 /* ── STREAK ── */
-.streak-bar{display:flex;align-items:center;gap:8px;
-  padding:4px 14px;background:rgba(245,158,11,.1);
+.streak-bar{display:flex;align-items:center;gap:5px;
+  padding:3px 9px;background:rgba(245,158,11,.1);
   border:1px solid rgba(245,158,11,.25);
   border-radius:20px;cursor:default;
-  font-size:.78rem;font-weight:700;color:var(--accent3);}
+  font-size:.72rem;font-weight:700;color:var(--accent3);flex-shrink:0;}
 .streak-bar .s-fire{font-size:.9rem;}
 .streak-freeze{
   font-size:.65rem;color:var(--text2);
@@ -325,6 +325,7 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
     <div class="nav-tab" onclick="showView('cheatsheet')">📋 Cheatsheet</div>
     <div class="nav-tab" onclick="showView('roadmap')">🗺️ Roadmap</div>
     <div class="nav-tab" onclick="showView('profile')">📊 Progress</div>
+    <div class="nav-tab" onclick="showView('creator')">🛠️ Creator</div>
   </div>
   <div class="topbar-right">
 <!-- Add this inside .topbar-right div, before the theme-btn -->
@@ -351,6 +352,8 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
     <div class="sb-item" onclick="showView('cheatsheet')"><span class="si">📋</span>Cheatsheet</div>
     <div class="sb-item" onclick="showView('roadmap')"><span class="si">🗺️</span>Roadmap</div>
     <div class="sb-item" onclick="showView('profile')"><span class="si">📊</span>Progress</div>
+    <div class="sb-item" onclick="showView('creator')"><span class="si">🛠️</span>Creator</div>
+
   </div>
   <div class="sb-sec">
     <div class="sb-sec-title">Languages</div>
@@ -526,6 +529,101 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
   </div>
 </div>
 
+<!-- CREATOR -->
+<div id="view-creator" class="view">
+  <div class="sec">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+  <div class="sec-title">🛠️ Course Creator</div>
+</div>
+
+<!-- Fixed bottom-right buttons for Creator -->
+<div id="creatorFixedBtns" style="position:fixed;bottom:20px;right:20px;z-index:9997;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+  <button class="btn btn-primary" onclick="showCreatorForm()">+ New Course</button>
+  <button class="btn btn-secondary btn-sm" onclick="importCourse()">📥 Import Course</button>
+  <button class="btn btn-purple btn-sm" onclick="importQuiz()">📝 Import Quiz JSON</button>
+</div>
+    </div>
+    <div id="creatorMsg" style="display:none;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:.84rem;font-weight:600;"></div>
+    <div id="customCoursesList"></div>
+  </div>
+
+  <!-- COURSE FORM -->
+  <div id="creatorForm" style="display:none;">
+    <div class="sec" style="max-width:800px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="hideCreatorForm()">← Back</button>
+        <div class="sec-title" id="formTitle">New Course</div>
+        <button class="btn btn-green btn-sm" style="margin-left:auto;" onclick="saveCourse()">💾 Save Course</button>
+      </div>
+
+      <!-- Course Details -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px;">
+        <div style="font-weight:700;margin-bottom:14px;color:var(--accent);">📋 Course Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="font-size:.76rem;color:var(--text2);display:block;margin-bottom:4px;">Course Name *</label>
+            <input id="cName" class="search-box" style="margin:0;" placeholder="e.g. My Python Course">
+          </div>
+          <div>
+            <label style="font-size:.76rem;color:var(--text2);display:block;margin-bottom:4px;">Icon (emoji)</label>
+            <input id="cIcon" class="search-box" style="margin:0;width:80px;" placeholder="🐍" maxlength="4">
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:.76rem;color:var(--text2);display:block;margin-bottom:4px;">Description *</label>
+          <textarea id="cDesc" class="search-box" style="margin:0;height:70px;resize:vertical;" placeholder="What will students learn?"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:.76rem;color:var(--text2);display:block;margin-bottom:4px;">Difficulty Level</label>
+            <select id="cLevel" class="lang-sel" style="width:100%;">
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+              <option>Beginner → Advanced</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:.76rem;color:var(--text2);display:block;margin-bottom:4px;">Language</label>
+            <select id="cLang" class="lang-sel" style="width:100%;">
+              <option value="python">Python</option>
+              <option value="javascript">JavaScript</option>
+              <option value="cpp">C++</option>
+              <option value="java">Java</option>
+              <option value="php">PHP</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections & Lessons -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-weight:700;color:var(--accent);">📚 Sections & Lessons</div>
+          <button class="btn btn-secondary btn-sm" onclick="addSection()">+ Add Section</button>
+        </div>
+        <div id="sectionsList"></div>
+      </div>
+
+      <!-- Quiz Questions -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-weight:700;color:var(--accent);">📝 Quiz Questions</div>
+          <button class="btn btn-secondary btn-sm" onclick="addQuizQ()">+ Add Question</button>
+        </div>
+        <div id="quizQList"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="previewCourse()">👁️ Preview</button>
+        <button class="btn btn-primary" onclick="exportCourse()">📤 Export JSON</button>
+        <button class="btn btn-green" onclick="saveCourse()">💾 Save & Publish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- end main -->
 <div class="toast" id="toast"></div>
 
@@ -572,7 +670,7 @@ document.getElementById('sbToggle').style.left='240px';
 /* ══════════════════════════════
    VIEWS
 ══════════════════════════════ */
-const viewNames=['home','courses','practice','cheatsheet','roadmap','profile'];
+const viewNames=['home','courses','practice','cheatsheet','roadmap','profile','creator'];
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -3045,8 +3143,12 @@ function openLesson(courseId,lessonId){
   const prev=allLessons[curIdx-1];
   const next=allLessons[curIdx+1];
 
-  body.innerHTML=`
-    <div class="lesson-title">${lesson.title}</div>
+ body.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="lesson-title" style="margin-bottom:0;">${lesson.title}</div>
+         </div>
+
+
     <div class="lesson-meta">
       <span class="badge badge-c">${c.name}</span>
       <span class="badge badge-p">${lesson.lang}</span>
@@ -4080,6 +4182,390 @@ showCheatsheet('python',document.querySelector('#cheatFilter .filter-pill'));
 showRoadmap('python',document.querySelector('#view-roadmap .filter-pill'));
 refreshChallenges();
 
+/* ══════════════════════════════
+   CUSTOM COURSE CREATOR
+══════════════════════════════ */
+let editingCourseId = null;
+let creatorSections = [];
+let creatorQuizQs = [];
+
+function getCustomCourses() {
+  return S.get('customCourses') || {};
+}
+function saveCustomCourses(obj) {
+  S.set('customCourses', obj);
+}
+
+function showCreatorForm(id = null) {
+  editingCourseId = id;
+  creatorSections = [];
+  creatorQuizQs = [];
+
+  if (id) {
+    const all = getCustomCourses();
+    const c = all[id];
+    if (c) {
+      document.getElementById('cName').value = c.name || '';
+      document.getElementById('cIcon').value = c.icon || '📘';
+      document.getElementById('cDesc').value = c.desc || '';
+      document.getElementById('cLevel').value = c.level || 'Beginner';
+      document.getElementById('cLang').value = c.lang || 'python';
+      creatorSections = c.sections ? JSON.parse(JSON.stringify(c.sections)) : [];
+      creatorQuizQs = c.quiz ? JSON.parse(JSON.stringify(c.quiz)) : [];
+      document.getElementById('formTitle').textContent = 'Edit: ' + c.name;
+    }
+  } else {
+    document.getElementById('cName').value = '';
+    document.getElementById('cIcon').value = '📘';
+    document.getElementById('cDesc').value = '';
+    document.getElementById('cLevel').value = 'Beginner';
+    document.getElementById('cLang').value = 'python';
+    document.getElementById('formTitle').textContent = 'New Course';
+    addSection();
+  }
+
+  document.getElementById('creatorForm').style.display = 'block';
+  document.querySelector('#view-creator > .sec').style.display = 'none';
+  renderSections();
+  renderQuizQs();
+}
+
+function hideCreatorForm() {
+  document.getElementById('creatorForm').style.display = 'none';
+  document.querySelector('#view-creator > .sec').style.display = 'block';
+  renderCustomCoursesList();
+}
+
+function addSection() {
+  creatorSections.push({ title: 'Section ' + (creatorSections.length + 1), lessons: [] });
+  renderSections();
+}
+
+function removeSection(i) {
+  creatorSections.splice(i, 1);
+  renderSections();
+}
+
+function addLesson(secIdx) {
+  creatorSections[secIdx].lessons.push({ title: '', theory: '', code: '', lang: document.getElementById('cLang').value });
+  renderSections();
+}
+
+function removeLesson(secIdx, lesIdx) {
+  creatorSections[secIdx].lessons.splice(lesIdx, 1);
+  renderSections();
+}
+
+function renderSections() {
+  const el = document.getElementById('sectionsList');
+  if (!creatorSections.length) {
+    el.innerHTML = '<p style="color:var(--text2);font-size:.82rem;">No sections yet. Click + Add Section.</p>';
+    return;
+  }
+  el.innerHTML = creatorSections.map((sec, si) => `
+    <div style="border:1px solid var(--border2);border-radius:9px;margin-bottom:12px;overflow:hidden;">
+      <div style="background:var(--bg3);padding:10px 14px;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:.75rem;font-weight:700;color:var(--text2);">SECTION ${si+1}</span>
+        <input value="${escapeAttr(sec.title)}" 
+          oninput="creatorSections[${si}].title=this.value"
+          class="search-box" style="margin:0;flex:1;padding:5px 9px;font-size:.8rem;" 
+          placeholder="Section title">
+        <button class="btn btn-secondary btn-sm" onclick="addLesson(${si})">+ Lesson</button>
+        <button class="btn btn-sm" style="background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2);" onclick="removeSection(${si})">✕</button>
+      </div>
+      <div style="padding:12px 14px;">
+        ${sec.lessons.length === 0 ? '<p style="font-size:.78rem;color:var(--text3);">No lessons. Click + Lesson.</p>' : ''}
+        ${sec.lessons.map((les, li) => `
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:.7rem;color:var(--text3);font-weight:700;">L${li+1}</span>
+              <input value="${escapeAttr(les.title)}" 
+                oninput="creatorSections[${si}].lessons[${li}].title=this.value"
+                class="search-box" style="margin:0;flex:1;padding:4px 9px;font-size:.8rem;" 
+                placeholder="Lesson title *">
+              <button class="btn btn-sm" style="background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2);" onclick="removeLesson(${si},${li})">✕</button>
+            </div>
+            <label style="font-size:.72rem;color:var(--text2);display:block;margin-bottom:3px;">Theory / Explanation</label>
+            <textarea 
+              oninput="creatorSections[${si}].lessons[${li}].theory=this.value"
+              class="search-box" style="margin:0 0 8px;height:70px;resize:vertical;font-size:.78rem;" 
+              placeholder="Explain the concept here...">${escapeHtml(les.theory||'')}</textarea>
+            <label style="font-size:.72rem;color:var(--text2);display:block;margin-bottom:3px;">Code Example</label>
+            <textarea 
+              oninput="creatorSections[${si}].lessons[${li}].code=this.value"
+              class="search-box" style="margin:0;height:90px;resize:vertical;font-size:.78rem;font-family:'JetBrains Mono',monospace;" 
+              placeholder="# Code example here...">${escapeHtml(les.code||'')}</textarea>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function addQuizQ() {
+  creatorQuizQs.push({ q: '', opts: ['', '', '', ''], a: 0 });
+  renderQuizQs();
+}
+
+function removeQuizQ(i) {
+  creatorQuizQs.splice(i, 1);
+  renderQuizQs();
+}
+
+function renderQuizQs() {
+  const el = document.getElementById('quizQList');
+  if (!creatorQuizQs.length) {
+    el.innerHTML = '<p style="color:var(--text2);font-size:.82rem;">No quiz questions yet.</p>';
+    return;
+  }
+  el.innerHTML = creatorQuizQs.map((q, qi) => `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+        <span style="font-size:.7rem;font-weight:700;color:var(--text3);">Q${qi+1}</span>
+        <input value="${escapeAttr(q.q)}"
+          oninput="creatorQuizQs[${qi}].q=this.value"
+          class="search-box" style="margin:0;flex:1;font-size:.8rem;padding:4px 9px;" 
+          placeholder="Question text *">
+        <button class="btn btn-sm" style="background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2);" onclick="removeQuizQ(${qi})">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        ${q.opts.map((o, oi) => `
+          <div style="display:flex;align-items:center;gap:5px;">
+            <input type="radio" name="ans_${qi}" ${q.a===oi?'checked':''} 
+              onchange="creatorQuizQs[${qi}].a=${oi}" title="Mark as correct answer">
+            <input value="${escapeAttr(o)}"
+              oninput="creatorQuizQs[${qi}].opts[${oi}]=this.value"
+              class="search-box" style="margin:0;flex:1;font-size:.76rem;padding:4px 8px;" 
+              placeholder="Option ${oi+1}">
+          </div>`).join('')}
+      </div>
+      <p style="font-size:.68rem;color:var(--text3);margin-top:5px;">● = correct answer</p>
+    </div>`).join('');
+}
+
+function escapeAttr(s) {
+  return (s || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function saveCourse() {
+  const name = document.getElementById('cName').value.trim();
+  const desc = document.getElementById('cDesc').value.trim();
+  if (!name) { showCreatorMsg('Course name is required!', 'err'); return; }
+  if (!desc) { showCreatorMsg('Description is required!', 'err'); return; }
+
+  const validSecs = creatorSections.filter(s => s.lessons.some(l => l.title.trim()));
+  if (!validSecs.length) { showCreatorMsg('Add at least one lesson!', 'err'); return; }
+
+  const id = editingCourseId || ('custom_' + Date.now());
+  const all = getCustomCourses();
+
+  // Assign IDs to lessons
+  const sections = validSecs.map((sec, si) => ({
+    title: sec.title || ('Section ' + (si + 1)),
+    lessons: sec.lessons.filter(l => l.title.trim()).map((l, li) => ({
+      id: id + '_' + si + '_' + li,
+      title: l.title.trim(),
+      theory: `<p>${(l.theory || '').replace(/\n/g, '</p><p>')}</p>`,
+      code: l.code || '// Your code here',
+      lang: document.getElementById('cLang').value
+    }))
+  }));
+
+  all[id] = {
+    id, name,
+    icon: document.getElementById('cIcon').value || '📘',
+    desc,
+    level: document.getElementById('cLevel').value,
+    lang: document.getElementById('cLang').value,
+    stripe: 'linear-gradient(90deg,#7c3aed,#00d4ff)',
+    color: 'rgba(124,58,237,0.07)',
+    sections,
+    quiz: creatorQuizQs.filter(q => q.q.trim()),
+    isCustom: true,
+    createdAt: all[id]?.createdAt || new Date().toISOString()
+  };
+
+  saveCustomCourses(all);
+  // Inject into COURSES so it works with existing system
+  injectCustomCourses();
+  showCreatorMsg('✓ Course saved!', 'ok');
+  setTimeout(() => hideCreatorForm(), 900);
+}
+
+function injectCustomCourses() {
+  const all = getCustomCourses();
+  Object.entries(all).forEach(([id, c]) => {
+    COURSES[id] = c;
+  });
+  buildSidebarLangs();
+}
+
+function renderCustomCoursesList() {
+  const el = document.getElementById('customCoursesList');
+  const all = getCustomCourses();
+  const entries = Object.entries(all);
+  if (!entries.length) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:60px 20px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🛠️</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">No custom courses yet</div>
+        <p style="color:var(--text2);font-size:.85rem;margin-bottom:20px;">Create your first course and it will appear here and in the Courses tab.</p>
+        <button class="btn btn-primary" onclick="showCreatorForm()">+ Create First Course</button>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `<div class="grid">${entries.map(([id, c]) => {
+    const total = (c.sections || []).reduce((s, sec) => s + (sec.lessons || []).length, 0);
+    return `<div class="cc" style="border-color:var(--accent2);">
+      <div class="cc-stripe" style="background:${c.stripe}"></div>
+      <div class="cc-icon">${c.icon}</div>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-desc">${c.desc}</div>
+      <div class="cc-meta"><span class="badge badge-p">Custom</span><span>${total} lessons</span></div>
+      <div style="display:flex;gap:6px;margin-top:12px;">
+        <button class="btn btn-primary btn-sm" onclick="openCourse('${id}')">▶ Open</button>
+        <button class="btn btn-secondary btn-sm" onclick="showCreatorForm('${id}')">✏️ Edit</button>
+        <button class="btn btn-secondary btn-sm" onclick="exportCourseById('${id}')">📤</button>
+        <button class="btn btn-sm" style="background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2);" onclick="deleteCourse('${id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function deleteCourse(id) {
+  if (!confirm('Delete this course? This cannot be undone.')) return;
+  const all = getCustomCourses();
+  delete all[id];
+  delete COURSES[id];
+  saveCustomCourses(all);
+  renderCustomCoursesList();
+  buildSidebarLangs();
+  showToast('Course deleted', 'err');
+}
+
+function exportCourse() {
+  const name = document.getElementById('cName').value.trim() || 'course';
+  const all = getCustomCourses();
+  if (!Object.keys(all).length) {
+    saveCourse();
+    return;
+  }
+  const id = editingCourseId || Object.keys(all)[0];
+  exportCourseById(id);
+}
+
+function exportCourseById(id) {
+  const all = getCustomCourses();
+  const c = all[id];
+  if (!c) return;
+  const blob = new Blob([JSON.stringify(c, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (c.name || 'course').replace(/\s+/g, '_') + '.json';
+  a.click();
+  showToast('📤 Exported!', 'ok');
+}
+
+function importQuiz() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        let added = 0;
+        const langs = ['python','javascript','cpp','java','php'];
+        langs.forEach(lang => {
+          if (data[lang] && Array.isArray(data[lang])) {
+            if (!QUIZBANK[lang]) QUIZBANK[lang] = [];
+            data[lang].forEach(q => {
+              if (q.q && q.opts && typeof q.a === 'number') {
+                QUIZBANK[lang].push(q);
+                added++;
+              }
+            });
+          }
+        });
+        if (added === 0) throw new Error('No valid questions found');
+        showToast('✅ Added ' + added + ' quiz questions!', 'ok');
+      } catch (err) {
+        showToast('❌ Invalid Quiz JSON: ' + err.message, 'err');
+      }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+function importCourse() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const c = JSON.parse(ev.target.result);
+        if (!c.name || !c.sections) throw new Error('Invalid format');
+        const id = 'custom_' + Date.now();
+        c.id = id;
+        c.isCustom = true;
+        const all = getCustomCourses();
+        all[id] = c;
+        saveCustomCourses(all);
+        injectCustomCourses();
+        renderCustomCoursesList();
+        showToast('📥 Imported: ' + c.name, 'ok');
+      } catch (err) {
+        showToast('❌ Invalid JSON file', 'err');
+      }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+function previewCourse() {
+  saveCourse();
+  const id = editingCourseId || Object.keys(getCustomCourses()).pop();
+  if (id) openCourse(id);
+}
+
+function showCreatorMsg(msg, type) {
+  const el = document.getElementById('creatorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = type === 'ok' ? 'rgba(0,229,153,.1)' : 'rgba(255,77,109,.1)';
+  el.style.color = type === 'ok' ? 'var(--green)' : 'var(--red)';
+  el.style.border = `1px solid ${type === 'ok' ? 'var(--green)' : 'var(--red)'}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 2500);
+}
+
+// Hook showView to render list when entering creator
+const _origShowView = showView;
+
+showView = function(name) {
+  _origShowView(name);
+  const fixedBtns = document.getElementById('creatorFixedBtns');
+  if (fixedBtns) fixedBtns.style.display = name === 'creator' ? 'flex' : 'none';
+  if (name === 'creator') {
+    document.getElementById('creatorForm').style.display = 'none';
+    document.querySelector('#view-creator > .sec').style.display = 'block';
+    renderCustomCoursesList();
+  }
+};
+
+// Load custom courses on startup
+injectCustomCourses();
+const _fixedBtns = document.getElementById('creatorFixedBtns');
+if (_fixedBtns) _fixedBtns.style.display = 'none';
+
+
 function updateName(val) {
   const clean = val.trim();
   const letter = clean ? clean[0].toUpperCase() : '?';
@@ -4096,6 +4582,21 @@ if (nameInput) {
   nameInput.value = savedName;
   updateName(savedName);
 }
+function toggleFullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.shiftKey && e.key === 'F'){
+    e.preventDefault();
+    toggleFullscreen();
+  }
+});
+
 </script>
 </body>
 </html>
