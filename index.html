@@ -633,7 +633,20 @@ textarea#codeInput{flex:1;width:100%;background:#050a11;color:#c4cde0;font-famil
 ══════════════════════════════ */
 	(()=>{
   const user = localStorage.getItem('pg_user');
-  if(!user) window.location.href = './auth.html';
+  if(!user){ window.location.href = './auth.html'; return; }
+
+  // Load this user's saved progress
+  const u = JSON.parse(user);
+  const accounts = JSON.parse(localStorage.getItem('pg_accounts')||'{}');
+  const account = accounts[u.email];
+  if(account && account.progress){
+    const p = account.progress;
+    if(p.done) localStorage.setItem('pg_done', JSON.stringify(p.done));
+    if(p.scores) localStorage.setItem('pg_scores', JSON.stringify(p.scores));
+    if(p.username) localStorage.setItem('pg_username', JSON.stringify(p.username));
+    if(p.activityLog) localStorage.setItem('pg_activityLog', JSON.stringify(p.activityLog));
+    if(p.customCourses) localStorage.setItem('pg_customCourses', JSON.stringify(p.customCourses));
+  }
 })();
 const S={
   get:k=>{try{return JSON.parse(localStorage.getItem('pg_'+k))}catch{return null}},
@@ -647,9 +660,32 @@ let quizData=[],quizIdx=0,quizScore=0,quizAnswered=false;
 /* ══════════════════════════════
    THEME
 ══════════════════════════════ */
+	// Auto-save every 60 seconds
+setInterval(saveUserProgress, 60000);
+
+// Save on page close
+window.addEventListener('beforeunload', saveUserProgress);
 	function logout(){
+  // Save progress before logout
+  saveUserProgress();
   localStorage.removeItem('pg_user');
   window.location.href = './auth.html';
+}
+
+function saveUserProgress(){
+  const user = JSON.parse(localStorage.getItem('pg_user')||'{}');
+  if(!user.email) return;
+  const accounts = JSON.parse(localStorage.getItem('pg_accounts')||'{}');
+  if(!accounts[user.email]) return;
+  accounts[user.email].progress = {
+    done:[...doneLessons],
+    scores:quizScores,
+    username:S.get('username')||'',
+    activityLog:S.get('activityLog')||[],
+    customCourses:S.get('customCourses')||{},
+    savedAt:new Date().toISOString()
+  };
+  localStorage.setItem('pg_accounts', JSON.stringify(accounts));
 }
 function toggleTheme(){
   const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
