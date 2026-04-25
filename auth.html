@@ -870,11 +870,27 @@ async function handleLogin(e) {
   
   try {
     await new Promise(r => setTimeout(r, 1500));
-    
-    localStorage.setItem('pg_user', JSON.stringify({email, timestamp: new Date().toISOString()}));
-    showToast('Login successful! Redirecting...', 'ok');
-    
-    setTimeout(() => window.location.href = './index.html', 1000);
+
+// Check if account exists
+const accounts = JSON.parse(localStorage.getItem('pg_accounts')||'{}');
+const account = accounts[email];
+
+if(!account){
+  btn.classList.remove('loading');
+  btnText.textContent = 'Log In';
+  showError('loginEmailErr', 'No account found with this email');
+  return;
+}
+
+if(account.password !== password){
+  btn.classList.remove('loading');
+  btnText.textContent = 'Log In';
+  showError('loginPasswordErr', 'Incorrect password');
+  return;
+}
+
+localStorage.setItem('pg_user', JSON.stringify(account));
+showToast('Login successful! Redirecting...', 'ok');
   } catch(err) {
     btn.classList.remove('loading');
     btnText.textContent = 'Log In';
@@ -925,7 +941,14 @@ async function handleSignup(e) {
       createdAt: new Date().toISOString()
     };
     
-    localStorage.setItem('pg_user', JSON.stringify(userData));
+    // Save user to accounts list
+const accounts = JSON.parse(localStorage.getItem('pg_accounts')||'{}');
+accounts[userData.email] = {
+  ...userData,
+  password: document.getElementById('signupPassword').value
+};
+localStorage.setItem('pg_accounts', JSON.stringify(accounts));
+localStorage.setItem('pg_user', JSON.stringify(userData));
     showToast('Account created! Redirecting...', 'ok');
     
     setTimeout(() => window.location.href = './index.html', 1000);
